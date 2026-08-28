@@ -1,0 +1,217 @@
+.card {
+  /* reference-matched dark glass panel (overrides the surface defaults) */
+  --glass-fill: var(--card-fill);
+  --glass-blur: var(--card-blur);
+  --glass-saturate: var(--card-saturate);
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-lg);
+  /* --card-transition: set to 0ms by consumers that drive transform
+     themselves (e.g. Motion), so the two don't interpolate each other. */
+  transition: transform var(--card-transition, 260ms) cubic-bezier(0.25, 0, 0, 1);
+}
+
+/* ── Card hover: subtle lift + the text grows a touch and brightens ──── */
+.card:hover {
+  transform: translateY(-4px);
+}
+
+.card:hover .title {
+  color: #fff;
+}
+
+.card:hover .description {
+  color: var(--color-fg);
+}
+
+.card:hover .text {
+  transform: scale(var(--card-text-hover-scale, 1.02));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .card:hover,
+  .card:hover .text {
+    transform: none;
+  }
+}
+
+/* ── Icon row ───────────────────────────────────────────────────────── */
+.icons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+  list-style: none;
+  margin: 0;
+}
+
+.icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.iconTile {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: var(--card-icon-size, 88px);
+  height: var(--card-icon-size, 88px);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+  transition: transform 200ms cubic-bezier(0.25, 0, 0, 1);
+  will-change: transform;
+}
+
+/* inner glow overlay — only opacity animates (GPU-friendly) */
+.iconTile::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--icon-hover-glow);
+  opacity: 0;
+  transition: opacity 200ms cubic-bezier(0.25, 0, 0, 1);
+  pointer-events: none;
+}
+
+.iconTile:hover {
+  transform: scale(1.08);
+}
+
+.iconTile:hover::after {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .iconTile {
+    transition: none;
+    will-change: auto;
+  }
+  .iconTile:hover {
+    transform: none;
+  }
+}
+
+.iconTile :global(svg) {
+  width: 58%;
+  height: 58%;
+}
+
+.iconTile :global(img) {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* label-initial shown when a tech has no icon */
+.iconFallback {
+  font-family: var(--font-heading);
+  font-size: calc(var(--card-icon-size, 88px) * 0.42);
+  font-weight: 600;
+  color: var(--color-fg-muted);
+}
+
+.iconLabel {
+  font-size: 12px;
+  color: var(--color-fg);
+}
+
+/* ── Divider ────────────────────────────────────────────────────────── */
+.divider {
+  width: 100%;
+  height: 1px;
+  border: none;
+  margin: var(--card-divider-gap, var(--spacing-lg)) 0;
+  background: var(--color-border);
+}
+
+/* ── Text block ─────────────────────────────────────────────────────── */
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--card-text-gap, var(--spacing-sm));
+  transform-origin: left bottom;
+  transition: transform 260ms cubic-bezier(0.25, 0, 0, 1);
+}
+
+/* Applied only when a media row sits above the text — the block then grows
+   to fill the card and settles against the bottom edge. */
+.textFill {
+  flex: 1;
+  justify-content: end;
+}
+
+/* ── Eyebrow: a full-width row above the title (e.g. index + year) ──── */
+.eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-fg-faint);
+}
+
+/* ── Header row: title/subtitle on the left, aside on the right ─────── */
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-lg);
+}
+
+.headerText {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.aside {
+  flex: none;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: var(--card-title-size, clamp(26px, 3vw, 20px));
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--color-fg);
+  transition: color 260ms cubic-bezier(0.25, 0, 0, 1);
+}
+
+.subtitle {
+  margin: 0;
+  font-size: 15px;
+  color: var(--color-fg-muted);
+}
+
+.description {
+  margin: 0;
+  max-width: 60ch;
+  color: var(--color-fg-muted);
+  font-size: 12px;
+  transition: color 260ms cubic-bezier(0.25, 0, 0, 1);
+}
+
+/* ── Footer row ─────────────────────────────────────────────────────── */
+/* Default margin-top is auto, not a fixed gap: .card is a flex column, so
+   this pushes the footer to the card's bottom edge, bottom-aligning CTAs
+   across cards of unequal text length (e.g. the Projects slider, where
+   flex row + default align-items:stretch already gives every card the
+   tallest sibling's height). Override --card-footer-gap for a fixed gap
+   instead. */
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+  margin-top: var(--card-footer-gap, auto);
+}

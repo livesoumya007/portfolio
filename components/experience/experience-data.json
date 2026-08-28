@@ -1,0 +1,42 @@
+{
+  "kicker": "Where I've worked",
+  "heading": "Experience",
+  "intro": "Four years of shipping interfaces, architecture and the odd AI experiment.",
+  "entries": [
+    {
+      "role": "Senior Software Engineer",
+      "company": "Company name",
+      "location": "City, Country",
+      "years": "June 2024 — Present",
+      "yearShort": "2024 —",
+      "type": "Full-time",
+      "current": true,
+      "summary": "Knowledge-graph features, an automated documentation engine and an LLM fine-tuning POC.",
+      "stack": ["React", "TypeScript", "D3.js", "LLM fine-tuning", "Workflow engine"],
+      "bullets": [
+        "Developed advanced features in a **Knowledge Graph**, including **node filtering**, **dependency creation**, **visual path tracing** between related nodes, and identification of **missing dependencies**, enhancing data visualization and analysis",
+        "Built a **documentation generation feature** leveraging application source code and a **static workflow engine**, enabling automated documentation through configurable **prompt and non-prompt based steps**",
+        "Conducted a **Proof of Concept (POC)** to fine-tune a **Large Language Model (LLM)** with domain-specific datasets, demonstrating a **30% improvement** in response accuracy and contextual relevance",
+        "Collaborated directly with clients to implement **custom add-on features** and modify existing functionality to meet specific business requirements and use cases"
+      ]
+    },
+    {
+      "role": "Software Engineer",
+      "company": "Company name",
+      "location": "City, Country",
+      "years": "June 2022 — May 2024",
+      "yearShort": "2022",
+      "type": "Full-time",
+      "current": false,
+      "summary": "Led a monolith-to-micro-frontend migration and owned its DevOps lifecycle end to end.",
+      "stack": ["React", "Micro Frontends", "AWS", "Azure", "Kubernetes", "Redis", "D3.js"],
+      "bullets": [
+        "Implemented **Micro Frontend (MFE)** architecture using **React**, modularizing a monolithic application into independently deployable units, enabling parallel development across teams",
+        "Led end-to-end transition from a **monolithic architecture** to **Micro Frontend (MFE)** using **React**, deploying modular applications on **AWS and Azure** with **Docker, Kubernetes (Helm)**; owned the entire **DevOps lifecycle** including boilerplate setup, Dockerfile creation, **CI/CD pipeline** scripting, and Helm chart development",
+        "Designed and architected a **distributed worker system** to process time-intensive tasks concurrently using **Redis, WebSockets, and Kubernetes Jobs**, significantly improving throughput and system responsiveness",
+        "Built and visualized a **Knowledge Graph** using **D3.js** to represent complex relationships within **Generative AI (GenAI)** datasets, facilitating deeper insights and data connectivity",
+        "Collaborated with the platform administration team to onboard **Micro Frontend (MFE)** child applications into the centralized UI framework, ensuring seamless integration and alignment with organizational standards"
+      ]
+    }
+  ]
+}

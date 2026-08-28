@@ -1,0 +1,110 @@
+.row {
+  /* Same glass body as Card — visually a sibling, not a different material. */
+  --glass-fill: var(--card-fill);
+  --glass-blur: var(--card-blur);
+  --glass-saturate: var(--card-saturate);
+  display: flex;
+  gap: var(--spacing-md);
+  padding: clamp(20px, 3vw, 30px) clamp(18px, 3vw, 32px);
+  transition:
+    box-shadow 400ms ease,
+    background 400ms ease;
+}
+
+/* Open state brightens through the existing token-override pattern (as
+   .card / .primary already do) rather than a competing border rule. */
+.row.open {
+  --glass-ring-violet: rgba(180, 150, 255, 0.85);
+  box-shadow:
+    inset 0 1px 0 var(--glass-inner-hi),
+    0 30px 70px -34px rgba(0, 0, 0, 0.95);
+}
+
+/* ── Rail: dot + vertical year, optional ─────────────────────────────── */
+.rail {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: clamp(34px, 8vw, 58px);
+  padding-top: 6px;
+}
+
+/* ── Content column ───────────────────────────────────────────────────── */
+.content {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ── Header / toggle button ──────────────────────────────────────────── */
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: clamp(14px, 3vw, 32px);
+  width: 100%;
+  padding: 2px 0;
+  border: none;
+  background: none;
+  appearance: none;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.header:focus-visible {
+  outline: 2px solid var(--color-signal);
+  outline-offset: 4px;
+  border-radius: var(--radius-xs);
+}
+
+.headerBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.chevron {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-full);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-fg-muted);
+  transition:
+    transform 450ms cubic-bezier(0.22, 1, 0.36, 1),
+    background 300ms ease,
+    border-color 300ms ease;
+}
+
+.header:hover .chevron {
+  background: var(--color-surface-raised);
+}
+
+.chevron[data-open] {
+  transform: rotate(180deg);
+  border-color: rgba(180, 150, 255, 0.3);
+}
+
+/* ── Body ─────────────────────────────────────────────────────────────── */
+/* height + overflow are driven inline (AccordionCard.tsx) since the row's
+   expanded height is measured per-toggle, not a fixed value. */
+.body {
+  padding-top: var(--spacing-lg);
+}
+
+.divider {
+  height: 1px;
+  margin-bottom: var(--spacing-lg);
+  background: linear-gradient(90deg, var(--color-border-strong), transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chevron {
+    transition: none;
+  }
+}

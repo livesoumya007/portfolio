@@ -1,0 +1,14 @@
+.skills {
+  padding: var(--spacing-section) 0;
+}
+
+.inner {
+  width: min(100% - 64px, var(--max-w-content));
+  margin: 0 auto;
+}
+
+/* Skills cards use smaller icon tiles so 4-5 icons fit on one row */
+.skillCard {
+  --card-icon-size: 64px;
+  height: 100%;
+}

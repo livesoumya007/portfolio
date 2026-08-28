@@ -1,0 +1,15 @@
+.experience {
+  padding: var(--spacing-section) 0;
+}
+
+.inner {
+  width: min(100% - clamp(32px, 8vw, 96px), var(--max-w-content));
+  margin: 0 auto;
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-top: clamp(28px, 4vw, 44px);
+}

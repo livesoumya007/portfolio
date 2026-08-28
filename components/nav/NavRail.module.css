@@ -1,0 +1,312 @@
+/* Tablet + desktop nav. ONE tree: `data-condensed` on the root drives every
+   full ↔ condensed difference through CSS transitions, so the bar reads as a
+   single element resizing. Nothing here is swapped or re-mounted. */
+
+.rail {
+  --morph: 0.48s cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Nav-scale glass: heavier blur + saturation than the default surface, on
+     the existing nav fill token. */
+  --glass-fill: var(--color-nav-bg);
+  --glass-blur: 30px;
+  --glass-saturate: 160%;
+  --glass-elevation: 0 24px 60px -38px rgba(0, 0, 0, 0.95);
+
+  position: fixed;
+  top: var(--nav-inset);
+  left: 0;
+  right: 0;
+  z-index: 50;
+  margin-inline: auto;
+
+  /* THE MORPH. Width is content-driven at all times, because the condensed
+     width is variable — "Experience" is a wider active label than "Home", so
+     there is no fixed target to transition to, and `fit-content` itself is
+     not an animatable value. Instead `min-width` (two concrete lengths, so it
+     transitions cleanly) carries the full state's span, and the effective
+     width is max(min-width, content). As min-width interpolates to 0 and the
+     labels collapse in the same window, the bar shrinks continuously — with
+     no measurement JS and no layout-thrashing width animation. */
+  width: fit-content;
+  min-width: min(100% - 2 * var(--nav-inset), var(--max-w-content));
+  max-width: calc(100% - 2 * var(--nav-inset));
+
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 2vw, 40px);
+  padding: 12px 14px 12px clamp(16px, 2vw, 26px);
+
+  transition:
+    min-width var(--morph),
+    gap var(--morph),
+    padding var(--morph);
+}
+
+.rail[data-condensed] {
+  min-width: 0;
+  gap: 6px;
+  padding: 8px;
+}
+
+/* ── Brand ──────────────────────────────────────────────────────────── */
+
+.brand {
+  flex: none;
+  display: flex;
+  align-items: center;
+  font-family: var(--font-heading);
+  font-size: 15.5px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--color-fg);
+  text-decoration: none;
+}
+
+/* Wordmark and monogram are both children of the same brand element and
+   cross-fade between the two states — swapping one element for the other
+   would break the "one element resizing" reading. */
+.wordmark,
+.monogram {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  white-space: nowrap;
+  transition:
+    max-width var(--morph),
+    opacity 0.3s ease;
+}
+
+.wordmark {
+  max-width: 200px;
+  opacity: 1;
+}
+
+.monogram {
+  max-width: 0;
+  opacity: 0;
+}
+
+.rail[data-condensed] .wordmark {
+  max-width: 0;
+  opacity: 0;
+}
+
+.rail[data-condensed] .monogram {
+  max-width: 40px;
+  opacity: 1;
+}
+
+.brace {
+  color: var(--color-fg-faint);
+}
+
+.dot {
+  color: var(--color-signal);
+}
+
+/* ── Divider — condensed state only ─────────────────────────────────── */
+
+.divider {
+  flex: none;
+  width: 1px;
+  height: 22px;
+  background: var(--color-border-strong);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.rail[data-condensed] .divider {
+  opacity: 1;
+}
+
+/* ── Links ──────────────────────────────────────────────────────────── */
+
+.links {
+  /* flex:1 is what centres the links in the full state; once min-width drops
+     to 0 there is no free space left to distribute, so the same rule packs
+     them against the brand in the condensed rail. */
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  transition: gap var(--morph);
+}
+
+.rail[data-condensed] .links {
+  gap: 6px;
+}
+
+.item {
+  display: flex;
+}
+
+.link {
+  /* Local stacking context so the indicator sits behind the label without
+     competing with GlassSurface's own ring/bloom layers. */
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  padding: 9px clamp(11px, 1.4vw, 16px);
+  border-radius: var(--radius-full);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  color: var(--color-fg-muted);
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    color 0.35s ease,
+    padding var(--morph);
+}
+
+.link:hover {
+  color: var(--color-fg);
+}
+
+.link[aria-current] {
+  color: var(--color-fg);
+}
+
+.link:focus-visible {
+  outline: 2px solid var(--color-signal);
+  outline-offset: 2px;
+}
+
+.rail[data-condensed] .link {
+  padding: 12px;
+}
+
+.rail[data-condensed] .link[aria-current] {
+  padding: 12px 14px;
+}
+
+.icon {
+  flex: none;
+  position: relative;
+  z-index: 1;
+  opacity: 0.85;
+}
+
+/* The design describes a narrow-desktop tier where labels fade out around
+   1000px. That band is already condensed here — the rail takes over below
+   1024px — so the labels need no second collapse rule of their own; the
+   condensed state below is the only thing that hides them. */
+.label {
+  position: relative;
+  z-index: 1;
+  display: block;
+  overflow: hidden;
+  margin-left: 8px;
+  max-width: 140px;
+  transition:
+    max-width var(--morph),
+    margin-left var(--morph),
+    opacity 0.35s ease;
+}
+
+.rail[data-condensed] .label {
+  max-width: 0;
+  margin-left: 0;
+  opacity: 0;
+}
+
+/* Only the section you're in keeps its label in the rail. */
+.rail[data-condensed] .link[aria-current] .label {
+  max-width: 140px;
+  margin-left: 8px;
+  opacity: 1;
+}
+
+/* ── Active indicator ───────────────────────────────────────────────── */
+
+/* Layout-animated by Motion via layoutId. NOTHING here may transition width
+   or left: a CSS transition on the same properties Motion is projecting would
+   fight it and produce a lagging, rubber-banding pill. Only the paint
+   properties transition. */
+.indicator {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    150deg,
+    var(--color-surface-raised),
+    var(--color-surface)
+  );
+  border: 1px solid var(--glass-ring-violet);
+  box-shadow:
+    0 6px 20px -8px var(--color-signal-glow),
+    inset 0 1px 0 var(--glass-inner-hi);
+  transition:
+    background 0.35s ease,
+    border-color 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+.rail[data-condensed] .indicator {
+  box-shadow:
+    0 8px 22px -8px var(--color-signal-glow),
+    inset 0 1px 0 var(--glass-inner-hi);
+}
+
+/* ── CTA ────────────────────────────────────────────────────────────── */
+
+/* Two-class selector so this beats controls.module.css `.control` regardless
+   of stylesheet order — the same technique the old navbar used for `.link`. */
+.rail .cta {
+  flex: none;
+  min-height: 40px;
+  width: auto;
+  gap: 0;
+  padding: 0 clamp(12px, 1.6vw, 20px);
+  font-size: 13.5px;
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    width var(--morph),
+    padding var(--morph);
+}
+
+.rail[data-condensed] .cta {
+  width: 40px;
+  padding: 0;
+}
+
+.ctaLabel {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  /* CTA text drops just below where the nav labels do, per the design. */
+  margin-left: clamp(0px, calc((100vw - 1100px) * 99), 8px);
+  max-width: clamp(0px, calc((100vw - 1100px) * 99), 90px);
+  transition:
+    max-width var(--morph),
+    margin-left var(--morph),
+    opacity 0.35s ease;
+}
+
+.rail[data-condensed] .ctaLabel {
+  max-width: 0;
+  margin-left: 0;
+  opacity: 0;
+}
+
+/* ── Reduced motion ─────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .rail,
+  .rail *,
+  .rail .cta {
+    transition-duration: 0.01ms !important;
+  }
+
+  .rail .cta:hover {
+    transform: none;
+  }
+}

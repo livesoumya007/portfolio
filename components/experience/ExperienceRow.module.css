@@ -1,0 +1,183 @@
+/* ── Rail: dot + vertical year + connecting line ─────────────────────── */
+.dot {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 9px;
+  height: 9px;
+}
+
+.dotHalo {
+  position: absolute;
+  inset: -3px;
+  border-radius: var(--radius-full);
+  background: var(--color-signal);
+  animation: pulse 2.6s ease-out infinite;
+}
+
+.dotCore {
+  position: relative;
+  width: 9px;
+  height: 9px;
+  border-radius: var(--radius-full);
+  border: 1.5px solid var(--color-border-strong);
+  background: var(--color-surface-raised);
+  transition: all 400ms ease;
+}
+
+/* Brightens once the row has opened — reads [data-open] on AccordionCard's
+   root, set alongside aria-expanded. Plain attribute selectors aren't
+   scoped by CSS Modules, so this reaches the ancestor GlassSurface fine. */
+[data-open] .dotCore {
+  border-color: var(--color-signal);
+  background: var(--color-signal);
+}
+
+.year {
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  color: var(--color-fg-faint);
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transition: color 400ms ease;
+}
+
+[data-open] .year {
+  color: var(--color-fg-subtle);
+}
+
+.line {
+  flex: 1;
+  width: 1px;
+  background: linear-gradient(180deg, var(--color-border-strong), transparent);
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(2.1);
+    opacity: 0;
+  }
+}
+
+/* ── Header content ───────────────────────────────────────────────────── */
+.titleRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 14px;
+}
+
+.role {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: clamp(18px, 2.6vw, 23px);
+  font-weight: 600;
+  letter-spacing: -0.018em;
+  color: var(--color-fg-muted);
+  transition: color 350ms ease;
+}
+
+[data-open] .role {
+  color: var(--color-fg);
+}
+
+.company {
+  font-size: clamp(13px, 2vw, 15px);
+  color: var(--color-fg-muted);
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  margin-top: 11px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-fg-faint);
+}
+
+.metaDot {
+  width: 3px;
+  height: 3px;
+  border-radius: var(--radius-full);
+  background: var(--color-fg-faint);
+}
+
+.summary {
+  margin: 14px 0 0;
+  max-width: 62ch;
+  font-size: clamp(14px, 2.1vw, 15.5px);
+  line-height: 1.58;
+  color: var(--color-fg-muted);
+  text-wrap: pretty;
+}
+
+/* ── Body: bullets + tech chips ───────────────────────────────────────── */
+.bullets {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.bullet {
+  display: grid;
+  grid-template-columns: 16px 1fr;
+  gap: 13px;
+  align-items: start;
+}
+
+.marker {
+  margin-top: 8px;
+  width: 5px;
+  height: 5px;
+  border-radius: 1.5px;
+  transform: rotate(45deg);
+  background: var(--gradient-bullet);
+}
+
+.copy {
+  margin: 0;
+  font-size: clamp(14px, 2.1vw, 15.5px);
+  line-height: 1.62;
+  color: var(--color-fg-muted);
+  text-wrap: pretty;
+}
+
+.copy strong {
+  font-weight: 600;
+  color: var(--color-fg);
+}
+
+.stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 26px;
+}
+
+.chip {
+  --pill-size: 11px;
+  --pill-tracking: 0.02em;
+  --pill-transform: none;
+  --pill-padding: 6px 12px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dotHalo {
+    animation: none;
+    opacity: 0.4;
+  }
+}

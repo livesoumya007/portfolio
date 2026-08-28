@@ -1,0 +1,179 @@
+/* ─────────────────────────────────────────────────────────────────────
+   GlassSurface — the only place mask-composite lives.
+
+   Layers, painted bottom→top:
+     root background      glassy fill + inner top highlight
+     ::after  (z -1)      soft corner bloom (escapes the box, no clip)
+     content              whatever the consumer renders
+     ::before             1px conic-gradient border ring
+   Every value comes from the --glass-* tokens in globals.css.
+   ──────────────────────────────────────────────────────────────────── */
+
+.surface {
+  position: relative;
+  isolation: isolate;
+  background: var(--glass-fill);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate, 100%));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate, 100%));
+  /* inner top highlight + optional elevation (variants override via token) */
+  box-shadow: inset 0 1px 0 var(--glass-inner-hi),
+    var(--glass-elevation, 0 0 0 rgba(0, 0, 0, 0));
+  color: inherit;
+  /* NOTE: no overflow:hidden — the bloom must escape the corners */
+}
+
+/* ── Conic-gradient border ring ─────────────────────────────────────── */
+.surface::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  border: var(--glass-border-width, 1px) solid transparent;
+  pointer-events: none;
+  /* Mask: keep only the border band with explicit origin & clip for subpixel precision on rounded pills */
+  -webkit-mask-image: linear-gradient(#fff 0 0), linear-gradient(#fff 0 0);
+  -webkit-mask-origin: padding-box, border-box;
+  -webkit-mask-clip: padding-box, border-box;
+  -webkit-mask-composite: destination-out;
+  mask-image: linear-gradient(#fff 0 0), linear-gradient(#fff 0 0);
+  mask-origin: padding-box, border-box;
+  mask-clip: padding-box, border-box;
+  mask-composite: exclude;
+}
+
+/* ── Outer corner bloom ─────────────────────────────────────────────── */
+.surface::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  filter: blur(var(--glass-bloom-blur));
+  background:
+    radial-gradient(
+      var(--glass-bloom-size-x) var(--glass-bloom-size-y) at 0% 0%,
+      var(--glass-bloom-white),
+      transparent 60%
+    ),
+    radial-gradient(
+      var(--glass-bloom-size-x) var(--glass-bloom-size-y) at 100% 100%,
+      var(--glass-bloom-violet),
+      transparent 60%
+    );
+}
+
+/* ── Glow presets ───────────────────────────────────────────────────── */
+
+/* diagonal: bright-white peak at top-left, soft-violet peak at bottom-right,
+   graduated falloff at the other corners (reference-matched, intentionally soft) */
+.surface[data-glow='diagonal']::before {
+  background: conic-gradient(
+    from 90deg at 50% 50%,
+    var(--glass-glow-white) 0deg,
+    var(--glass-ring-white-3) 45deg,
+    var(--glass-ring-dim) 90deg,
+    var(--glass-ring-violet-3) 135deg,
+    var(--glass-ring-violet) 180deg,
+    var(--glass-ring-violet-2) 215deg,
+    var(--glass-ring-dim-2) 270deg,
+    var(--glass-ring-white-2) 315deg,
+    var(--glass-glow-white) 360deg
+  ) border-box;
+}
+
+/* active: violet-forward ring + violet bloom emphasis (selected nav link) */
+.surface[data-glow='active']::before {
+  background: conic-gradient(
+    from 0deg,
+    var(--glass-glow-dim) 0deg,
+    var(--glass-glow-violet) 135deg,
+    var(--glass-glow-dim) 225deg,
+    var(--glass-glow-violet) 315deg,
+    var(--glass-glow-dim) 360deg
+  ) border-box;
+}
+.surface[data-glow='active']::after {
+  /* violet under-glow for the selected nav pill — decoupled from card bloom */
+  filter: blur(18px);
+  background: radial-gradient(
+    150px 90px at 50% 100%,
+    var(--color-signal-glow),
+    transparent 70%
+  );
+}
+
+/* split: white left half / violet right half, blending top & bottom (CTAs) */
+.surface[data-glow='split']::before {
+  border-width: 1px;
+  background:
+    conic-gradient(
+      from 270deg at 50% 50%,
+      var(--glass-split-white) 0deg,
+      var(--glass-split-white-2) 80deg,
+      var(--glass-split-handoff-b) 150deg,
+      var(--glass-split-violet-2) 180deg,
+      var(--glass-split-violet) 260deg,
+      var(--glass-split-handoff-t) 330deg,
+      var(--glass-split-white) 360deg
+    ) border-box;
+}
+.surface[data-glow='split']::after {
+  display: none;
+}
+
+/* subtle: faint white ring, no bloom (navbar treatment) */
+.surface[data-glow='subtle']::before {
+  background: conic-gradient(
+    from 0deg,
+    var(--glass-glow-faint) 0deg,
+    var(--glass-glow-faint-hi) 315deg,
+    var(--glass-glow-faint) 360deg
+  ) border-box;
+}
+.surface[data-glow='subtle']::after {
+  display: none;
+}
+
+/* shell: large section containers. Everything here is quieter than the
+   other presets on purpose — a container wrapped in glass around content
+   that is *also* glass will flatten into one slab unless it recedes. The
+   ring is near-uniform (no lit corner to compete with the cards inside),
+   the fill is flatter and darker (--shell-fill, set by consumers), and the
+   one loud detail is the specular top edge, which reads as the lit edge of
+   a pane rather than as an outline. */
+.surface[data-glow='shell']::before {
+  background: conic-gradient(
+    from 0deg,
+    var(--glass-glow-faint) 0deg,
+    var(--glass-glow-faint-hi) 180deg,
+    var(--glass-glow-faint) 360deg
+  ) border-box;
+}
+.surface[data-glow='shell']::after {
+  /* one wide ambient bloom instead of two corner blooms */
+  filter: blur(var(--shell-bloom-blur));
+  background: radial-gradient(
+    var(--shell-bloom-size-x) var(--shell-bloom-size-y) at var(--shell-bloom-pos, 20% 0%),
+    var(--shell-bloom-color),
+    transparent 70%
+  );
+}
+
+/* ── Radius variants (consumed by ::before/::after via inherit) ──────── */
+.radiusSm {
+  border-radius: var(--radius-sm);
+}
+.radiusMd {
+  border-radius: var(--radius-md);
+}
+.radiusLg {
+  border-radius: var(--radius-lg);
+}
+.radiusXl {
+  border-radius: var(--radius-xl);
+}
+.radiusFull {
+  border-radius: var(--radius-full);
+}

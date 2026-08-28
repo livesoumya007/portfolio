@@ -1,0 +1,27 @@
+/* Inline glass pill. Like controls.module.css, this only owns box +
+   typography — the ring and fill come from GlassSurface and the --glass-*
+   tokens. Sizing is exposed as --pill-* so consumers can retune without
+   fighting cross-module cascade order. */
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: var(--pill-padding, 7px 13px);
+  font-family: var(--font-sans);
+  font-size: var(--pill-size, 10px);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: var(--pill-tracking, 0.14em);
+  text-transform: var(--pill-transform, uppercase);
+  white-space: nowrap;
+  color: var(--color-fg-muted);
+}
+
+.dot {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--color-signal);
+}

@@ -1,0 +1,119 @@
+/* Entry timing mirrors components/hero/hero-timing.ts — keep in sync. */
+
+.hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: 610px;
+  /* Top value absorbs the floating nav's inset + height, which `main` used to
+     compensate for with a fixed pad. */
+  padding: clamp(104px, 12vh, 132px) 0 74px;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-bg);
+}
+
+.ambient {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+  width: min(100% - 64px, var(--max-w-content));
+  margin: 0 auto;
+  text-align: center;
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-fg-muted);
+  margin-bottom: 28px;
+  justify-content: center;
+}
+
+.eyebrow::before {
+  content: "";
+  width: 22px;
+  height: 1px;
+  background: var(--color-signal);
+  box-shadow: 0 0 14px var(--color-signal-glow);
+}
+
+.nameStage {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  min-width: 100%;
+  padding: 18px 38px 26px;
+  margin-bottom: 4px;
+}
+
+
+.title {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  font-family: var(--font-heading);
+  font-weight: 560;
+  font-size: clamp(48px, 7vw, 88px);
+  line-height: 0.98;
+  letter-spacing: -0.055em;
+  color: var(--color-fg);
+  text-wrap: balance;
+}
+
+.accent {
+  position: relative;
+  display: inline-block;
+}
+
+
+.subtitle {
+  max-width: 760px;
+  margin: 12px auto 0;
+  font-size: clamp(22px, 2.8vw, 34px);
+  font-weight: 420;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  color: var(--color-fg-muted);
+  text-wrap: balance;
+}
+
+.copy {
+  max-width: 620px;
+  margin: 26px auto 36px;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--color-fg-muted);
+}
+
+.ctas {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* Entry animations are handled by <FadeUp> (Motion whileInView) —
+   see components/ui/FadeUp.tsx. No CSS animation needed here. */
+
+@media (min-width: 721px) {
+  .hero {
+    min-height: 670px;
+    padding: var(--spacing-xxl) 0;
+  }
+  .nameStage {
+    min-width: min(100%, 900px);
+    padding: 26px 112px 32px;
+  }
+}

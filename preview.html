@@ -1,0 +1,1345 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portfolio Reference — Dark Hero with Purple Ambient Dots</title>
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --panel: rgba(255, 255, 255, 0.035);
+      --panel-strong: rgba(255, 255, 255, 0.055);
+      --line: rgba(255, 255, 255, 0.09);
+      --line-strong: rgba(255, 255, 255, 0.16);
+      --text: #fafafa;
+      --muted: rgba(255, 255, 255, 0.62);
+      --soft: rgba(255, 255, 255, 0.44);
+      --faint: rgba(255, 255, 255, 0.28);
+      --accent: #a855f7;
+      --accent-soft: rgba(168, 85, 247, 0.16);
+      --accent-glow: rgba(168, 85, 247, 0.28);
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --radius-sm: 10px;
+      --shadow: 0 24px 90px rgba(0, 0, 0, 0.42);
+      --max: 1160px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 50% -10%, rgba(168, 85, 247, 0.12), transparent 38%),
+        radial-gradient(circle at 10% 12%, rgba(168, 85, 247, 0.06), transparent 22%),
+        var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      letter-spacing: -0.01em;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    a {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .page {
+      margin: 0 auto;
+      min-height: 100vh;
+      background: rgba(10, 10, 10, 0.84);
+      border-inline: 1px solid rgba(255, 255, 255, 0.045);
+      box-shadow: var(--shadow);
+      overflow: clip;
+    }
+
+    .shell {
+      width: min(calc(100% - 80px), var(--max));
+      margin: 0 auto;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      background: rgba(10, 10, 10, 0.76);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .nav-inner {
+      width: min(calc(100% - 80px), var(--max));
+      min-height: 72px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      white-space: nowrap;
+    }
+
+    .brand span {
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      color: var(--soft);
+      font-size: 13px;
+    }
+
+    .nav-links a {
+      position: relative;
+      transition: color 180ms ease;
+    }
+
+    .nav-links a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -8px;
+      width: 100%;
+      height: 1px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: left center;
+      transition: transform 180ms ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    .nav-links a:hover::after {
+      transform: scaleX(1);
+    }
+
+    .mode-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 11px;
+      border: 1px solid var(--line-strong);
+      border-radius: 999px;
+      color: var(--soft);
+      font-size: 11px;
+      background: rgba(255, 255, 255, 0.025);
+      white-space: nowrap;
+    }
+
+    .mode-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 18px var(--accent-glow);
+    }
+
+    .hero {
+      position: relative;
+      min-height: 670px;
+      isolation: isolate;
+      overflow: hidden;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .hero::before {
+      display: none;
+    }
+
+    #ambient-field {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      width: min(calc(100% - 80px), var(--max));
+      margin: 0 auto;
+      padding: 108px 0 96px;
+      text-align: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--soft);
+      margin-bottom: 28px;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 22px;
+      height: 1px;
+      background: var(--accent);
+      box-shadow: 0 0 14px var(--accent-glow);
+    }
+
+    .name-stage {
+      position: relative;
+      display: inline-grid;
+      place-items: center;
+      min-width: min(100%, 900px);
+      padding: 26px 112px 32px;
+      margin-bottom: 4px;
+      cursor: default;
+      isolation: isolate;
+    }
+
+    .name-stage:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 8px;
+      border-radius: 18px;
+    }
+
+    .brace-svg,
+    #bracket-cloud {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .brace-svg {
+      overflow: visible;
+      opacity: 0.34;
+      transition: opacity 280ms ease, filter 280ms ease;
+      filter: drop-shadow(0 0 0 rgba(168, 85, 247, 0));
+    }
+
+    .name-stage:hover .brace-svg,
+    .name-stage:focus-visible .brace-svg {
+      opacity: 0.95;
+      filter: drop-shadow(0 0 16px rgba(168, 85, 247, 0.18));
+    }
+
+    .brace-guide {
+      fill: none;
+      stroke: rgba(250, 250, 250, 0.22);
+      stroke-width: 1.25;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 2 9;
+    }
+
+    .brace-accent {
+      fill: none;
+      stroke: rgba(168, 85, 247, 0.72);
+      stroke-width: 1.15;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 1 12;
+      opacity: 0.72;
+    }
+
+    #bracket-cloud {
+      z-index: 1;
+      opacity: 1;
+    }
+
+    .hero-title {
+      position: relative;
+      z-index: 2;
+      margin: 0;
+      font-size: clamp(48px, 7vw, 88px);
+      font-weight: 560;
+      line-height: 0.98;
+      letter-spacing: -0.055em;
+      text-wrap: balance;
+    }
+
+    .hero-title .accent-word {
+      position: relative;
+      display: inline-block;
+    }
+
+    .hero-title .accent-word::after {
+      content: "";
+      position: absolute;
+      left: 0.03em;
+      right: 0.03em;
+      bottom: 0.04em;
+      height: 0.06em;
+      border-radius: 999px;
+      background: linear-gradient(90deg, transparent, rgba(168, 85, 247, 0.8), transparent);
+      opacity: 0.72;
+    }
+
+    .hero-subtitle {
+      max-width: 760px;
+      margin: 12px auto 0;
+      font-size: clamp(22px, 2.8vw, 34px);
+      font-weight: 420;
+      line-height: 1.2;
+      letter-spacing: -0.03em;
+      color: rgba(255, 255, 255, 0.62);
+      text-wrap: balance;
+    }
+
+    .hero-copy {
+      max-width: 620px;
+      margin: 26px auto 36px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .hero-actions {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 46px;
+      padding: 0 22px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: var(--text);
+      color: var(--bg);
+      box-shadow: 0 12px 40px rgba(255, 255, 255, 0.14);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 18px 44px rgba(255, 255, 255, 0.18);
+    }
+
+    .btn-secondary {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.025);
+      border-color: rgba(168, 85, 247, 0.36);
+      box-shadow: inset 0 0 0 1px rgba(168, 85, 247, 0.05);
+    }
+
+    .btn-secondary:hover {
+      border-color: rgba(168, 85, 247, 0.7);
+      background: rgba(168, 85, 247, 0.08);
+    }
+
+    .hover-note {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 62px;
+      font-size: 10px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.3);
+    }
+
+    .hover-note::before,
+    .hover-note::after {
+      content: "";
+      width: 34px;
+      height: 1px;
+      background: rgba(168, 85, 247, 0.36);
+    }
+
+    .section {
+      border-bottom: 1px solid var(--line);
+      padding: 84px 0;
+    }
+
+    .section-head {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 40px;
+    }
+
+    .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--soft);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .kicker::before {
+      content: "";
+      width: 18px;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    h2 {
+      margin: 0;
+      font-size: clamp(28px, 4vw, 40px);
+      font-weight: 560;
+      line-height: 1.1;
+      letter-spacing: -0.04em;
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(240px, 0.6fr);
+      gap: 28px;
+      align-items: start;
+    }
+
+    .about-copy {
+      font-size: clamp(21px, 2.3vw, 28px);
+      line-height: 1.52;
+      font-weight: 420;
+      color: rgba(255, 255, 255, 0.8);
+      letter-spacing: -0.025em;
+      max-width: 820px;
+    }
+
+    .about-copy strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .signal-card {
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.028));
+      border-radius: var(--radius-md);
+      padding: 22px;
+    }
+
+    .signal-card p {
+      margin: 0 0 16px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .signal-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .signal-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding-top: 12px;
+      border-top: 1px solid var(--line);
+      font-size: 13px;
+    }
+
+    .signal-row span:first-child {
+      color: var(--soft);
+    }
+
+    .signal-row span:last-child {
+      color: var(--text);
+      font-weight: 550;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      min-height: 238px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--line);
+      background: var(--panel);
+      padding: 28px;
+      transition: transform 220ms ease, border-color 220ms ease, background 220ms ease;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(168, 85, 247, 0.36);
+      background: rgba(255, 255, 255, 0.048);
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .tech-chip {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.06);
+      display: grid;
+      place-items: center;
+      color: rgba(255, 255, 255, 0.88);
+      font-size: 11px;
+      font-weight: 650;
+      letter-spacing: 0.01em;
+      transition: border-color 180ms ease, color 180ms ease, background 180ms ease;
+    }
+
+    .card:hover .tech-chip {
+      border-color: rgba(168, 85, 247, 0.38);
+      background: rgba(168, 85, 247, 0.08);
+    }
+
+    .card h3 {
+      margin: 0 0 9px;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.62;
+    }
+
+    .footnote {
+      margin-top: 16px;
+      color: rgba(255, 255, 255, 0.34);
+      font-size: 11px;
+      font-style: italic;
+    }
+
+    .timeline {
+      position: relative;
+      padding-left: 64px;
+      max-width: 930px;
+    }
+
+    .timeline-base,
+    .timeline-fill {
+      position: absolute;
+      left: 19px;
+      top: 10px;
+      width: 1px;
+      border-radius: 999px;
+    }
+
+    .timeline-base {
+      bottom: 10px;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .timeline-fill {
+      height: 68%;
+      background: linear-gradient(to bottom, rgba(168, 85, 247, 1), rgba(168, 85, 247, 0.12));
+      box-shadow: 0 0 18px rgba(168, 85, 247, 0.25);
+    }
+
+    .timeline-item {
+      position: relative;
+      padding-bottom: 58px;
+    }
+
+    .timeline-item:last-child {
+      padding-bottom: 0;
+    }
+
+    .timeline-dot {
+      position: absolute;
+      left: -52px;
+      top: 4px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--bg);
+      border: 1.5px solid rgba(250, 250, 250, 0.86);
+      box-shadow: 0 0 0 5px rgba(168, 85, 247, 0.12);
+    }
+
+    .timeline-item.is-muted .timeline-dot {
+      border-color: rgba(255, 255, 255, 0.24);
+      box-shadow: none;
+    }
+
+    .timeline-date {
+      margin-bottom: 7px;
+      color: var(--soft);
+      font-size: 12px;
+    }
+
+    .timeline-title {
+      margin: 0 0 4px;
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.025em;
+    }
+
+    .timeline-meta {
+      margin-bottom: 14px;
+      color: var(--soft);
+      font-size: 13px;
+    }
+
+    .timeline-copy {
+      max-width: 720px;
+      margin: 0;
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 14px;
+      line-height: 1.72;
+    }
+
+    .project-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .project-card {
+      border-radius: var(--radius-md);
+      border: 1px solid var(--line);
+      background: var(--panel);
+      padding: 24px;
+      transition: transform 220ms ease, border-color 220ms ease, background 220ms ease;
+    }
+
+    .project-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(168, 85, 247, 0.34);
+      background: rgba(255, 255, 255, 0.048);
+    }
+
+    .project-thumb {
+      height: 156px;
+      border-radius: var(--radius-sm);
+      margin-bottom: 20px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      background:
+        radial-gradient(circle at 50% 50%, rgba(168, 85, 247, 0.12), transparent 48%),
+        rgba(255, 255, 255, 0.04);
+    }
+
+    .project-thumb canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .project-title {
+      margin: 0 0 8px;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .project-copy {
+      margin: 0 0 16px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.62;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag {
+      border-radius: 999px;
+      border: 1px solid rgba(168, 85, 247, 0.18);
+      background: rgba(168, 85, 247, 0.08);
+      color: rgba(255, 255, 255, 0.86);
+      font-size: 11px;
+      padding: 5px 10px;
+    }
+
+    .recommendations {
+      padding-top: 26px;
+      margin-top: 36px;
+      border-top: 1px solid var(--line);
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .mini-note {
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(168, 85, 247, 0.18);
+      background: rgba(168, 85, 247, 0.055);
+      padding: 18px;
+    }
+
+    .mini-note b {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 13px;
+      font-weight: 650;
+    }
+
+    .mini-note p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .footer {
+      padding: 34px 0 44px;
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 12px;
+    }
+
+    @media (max-width: 980px) {
+
+      .shell,
+      .nav-inner,
+      .hero-inner {
+        width: min(calc(100% - 48px), var(--max));
+      }
+
+      .grid-3,
+      .recommendations {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .about-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .name-stage {
+        min-width: 100%;
+        padding-inline: 82px;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .page {
+        border-inline: 0;
+      }
+
+      .shell,
+      .nav-inner,
+      .hero-inner {
+        width: min(calc(100% - 32px), var(--max));
+      }
+
+      .nav-inner {
+        min-height: 66px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .hero {
+        min-height: 610px;
+      }
+
+      .hero-inner {
+        padding: 88px 0 74px;
+      }
+
+      .name-stage {
+        padding: 18px 38px 26px;
+      }
+
+      .hero-title {
+        font-size: clamp(42px, 13vw, 64px);
+        line-height: 0.98;
+      }
+
+      .hero-subtitle {
+        font-size: 22px;
+      }
+
+      .hero-copy {
+        margin-top: 22px;
+        font-size: 14px;
+      }
+
+      .section {
+        padding: 68px 0;
+      }
+
+      .grid-3,
+      .project-grid,
+      .recommendations {
+        grid-template-columns: 1fr;
+      }
+
+      .card {
+        min-height: auto;
+      }
+
+      .timeline {
+        padding-left: 48px;
+      }
+
+      .timeline-base,
+      .timeline-fill {
+        left: 14px;
+      }
+
+      .timeline-dot {
+        left: -41px;
+      }
+
+      .hover-note {
+        margin-top: 44px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        transition-duration: 0.001ms !important;
+        animation-duration: 0.001ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <h1 class="sr-only">Portfolio reference layout</h1>
+
+    <header class="nav">
+      <div class="nav-inner">
+        <div class="brand">arijit<span>.dev</span></div>
+        <nav class="nav-links" aria-label="Primary">
+          <a href="#work">Work</a>
+          <a href="#about">About</a>
+          <a href="#experience">Experience</a>
+          <a href="#contact">Contact</a>
+        </nav>
+        <div class="mode-pill" aria-label="Dark theme selected">
+          <span class="mode-dot" aria-hidden="true"></span>
+          <span>Dark</span>
+        </div>
+      </div>
+    </header>
+
+    <section class="hero" aria-labelledby="hero-title">
+      <canvas id="ambient-field" aria-hidden="true"></canvas>
+
+      <div class="hero-inner">
+        <div class="eyebrow">Senior UI Engineer · Pune, India</div>
+
+        <div class="name-stage" id="name-zone" tabindex="0" aria-label="Hover or focus to reveal brace formation">
+          <svg class="brace-svg" viewBox="0 0 1000 240" preserveAspectRatio="none" aria-hidden="true">
+            <path class="brace-guide"
+              d="M150 26 C116 26 116 58 116 76 C116 94 97 106 76 120 C97 134 116 146 116 164 C116 182 116 214 150 214" />
+            <path class="brace-guide"
+              d="M850 26 C884 26 884 58 884 76 C884 94 903 106 924 120 C903 134 884 146 884 164 C884 182 884 214 850 214" />
+            <path class="brace-accent"
+              d="M150 26 C116 26 116 58 116 76 C116 94 97 106 76 120 C97 134 116 146 116 164 C116 182 116 214 150 214" />
+            <path class="brace-accent"
+              d="M850 26 C884 26 884 58 884 76 C884 94 903 106 924 120 C903 134 884 146 884 164 C884 182 884 214 850 214" />
+          </svg>
+          <canvas id="bracket-cloud" aria-hidden="true"></canvas>
+          <h2 class="hero-title" id="hero-title">Hi, I’m <span class="accent-word">Arijit</span>.</h2>
+        </div>
+
+        <p class="hero-subtitle">I build interfaces that feel deliberate, fast, and production-ready.</p>
+        <p class="hero-copy">
+          5.5 years of React, TypeScript, and frontend engineering for real products. I enjoy turning complex UI systems
+          into crisp, scalable experiences — and I’m steadily expanding toward full-stack AI engineering.
+        </p>
+
+        <div class="hero-actions">
+          <button class="btn btn-primary">View work <span aria-hidden="true">→</span></button>
+          <button class="btn btn-secondary">Download CV</button>
+        </div>
+
+        <div class="hover-note">Hover my name</div>
+      </div>
+    </section>
+
+    <section class="section" id="about">
+      <div class="shell">
+        <div class="section-head">
+          <div class="kicker">About</div>
+          <h2>Frontend depth, product judgment.</h2>
+        </div>
+
+        <div class="about-grid">
+          <div class="about-copy">
+            I work on the kind of frontend most users never notice — until it breaks. Lately at
+            <strong>Embitel</strong>, building automotive software for CARIAD and SKODA. Before that, cruise platforms,
+            GST audit tools, and a few things I cannot talk about.
+          </div>
+
+          <aside class="signal-card" aria-label="Portfolio positioning summary">
+            <p>
+              A portfolio gets stronger when it communicates not only the tools you know, but the decisions you make.
+            </p>
+            <div class="signal-list">
+              <div class="signal-row"><span>Primary strength</span><span>UI architecture</span></div>
+              <div class="signal-row"><span>Style</span><span>Minimal + precise</span></div>
+              <div class="signal-row"><span>Next step</span><span>AI systems</span></div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="toolkit-title">
+      <div class="shell">
+        <div class="section-head">
+          <div class="kicker">Toolkit</div>
+          <h2 id="toolkit-title">What I work with.</h2>
+        </div>
+
+        <div class="grid-3">
+          <article class="card">
+            <div class="chip-row"><span class="tech-chip">Re</span><span class="tech-chip">TS</span><span
+                class="tech-chip">Nx</span><span class="tech-chip">Ng</span><span class="tech-chip">Tw</span></div>
+            <h3>Frontend</h3>
+            <p>React, TypeScript, Next.js, Angular, Tailwind. Where I spend most of my time.</p>
+          </article>
+
+          <article class="card">
+            <div class="chip-row"><span class="tech-chip">MF</span><span class="tech-chip">Wp</span><span
+                class="tech-chip">Ad</span><span class="tech-chip">DS</span></div>
+            <h3>Architecture</h3>
+            <p>Micro-frontends, Module Federation, atomic design, and design systems for serious codebases.</p>
+          </article>
+
+          <article class="card">
+            <div class="chip-row"><span class="tech-chip">Az</span><span class="tech-chip">Dk</span><span
+                class="tech-chip">Sn</span><span class="tech-chip">CI</span></div>
+            <h3>DevOps & tooling</h3>
+            <p>Azure DevOps, Docker, SonarQube, CI/CD pipelines. Enough to keep delivery grounded.</p>
+          </article>
+
+          <article class="card">
+            <div class="chip-row"><span class="tech-chip">Nd</span><span class="tech-chip">Sb</span><span
+                class="tech-chip">Py</span></div>
+            <h3>Backend</h3>
+            <p>Node.js, Spring Boot, Python. Comfortable building, debugging, and integrating end-to-end.</p>
+          </article>
+
+          <article class="card">
+            <div class="chip-row"><span class="tech-chip">SK</span><span class="tech-chip">Ai</span><span
+                class="tech-chip">Fa</span></div>
+            <h3>Currently learning</h3>
+            <p>Semantic Kernel, Azure OpenAI, FastAPI. The direction I am pushing beyond frontend.</p>
+          </article>
+
+          <article class="card">
+            <div class="chip-row"><span class="tech-chip">Mo</span><span class="tech-chip">Pg</span><span
+                class="tech-chip">Gq</span></div>
+            <h3>Data layer</h3>
+            <p>MongoDB, PostgreSQL, GraphQL. Comfortable with schemas, queries, and practical modeling.</p>
+          </article>
+        </div>
+
+        <div class="footnote">Placeholder marks can later become monochrome SVG brand icons in the real implementation.
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="experience" aria-labelledby="experience-title">
+      <div class="shell">
+        <div class="section-head">
+          <div class="kicker">Career</div>
+          <h2 id="experience-title">Where I’ve been.</h2>
+        </div>
+
+        <div class="timeline">
+          <div class="timeline-base" aria-hidden="true"></div>
+          <div class="timeline-fill" aria-hidden="true"></div>
+
+          <article class="timeline-item">
+            <div class="timeline-dot" aria-hidden="true"></div>
+            <div class="timeline-date">2024 — Present</div>
+            <h3 class="timeline-title">Senior UI Engineer · Embitel Technologies</h3>
+            <div class="timeline-meta">CARIAD India · SKODA MOAP</div>
+            <p class="timeline-copy">
+              Leading frontend on automotive software for SKODA’s MOAP platform. Building CI/CD documentation tooling,
+              owning DevOps presentation decks for stakeholder reviews, and shepherding the team through SonarCloud
+              quality gates.
+            </p>
+          </article>
+
+          <article class="timeline-item">
+            <div class="timeline-dot" aria-hidden="true"></div>
+            <div class="timeline-date">2022 — 2024</div>
+            <h3 class="timeline-title">UI Engineer · Cruise Platform</h3>
+            <div class="timeline-meta">React · Next.js · AEM · GraphQL</div>
+            <p class="timeline-copy">
+              Built atomic-design components for a cruise booking platform — CardRail, InspirationalCardRail,
+              VerticalTabs, and the G012 organism family. Worked closely with content authors integrating AEM with a
+              typed GraphQL layer.
+            </p>
+          </article>
+
+          <article class="timeline-item is-muted">
+            <div class="timeline-dot" aria-hidden="true"></div>
+            <div class="timeline-date">2020 — 2022</div>
+            <h3 class="timeline-title">Frontend Developer · Earlier roles</h3>
+            <div class="timeline-meta">Angular · WiFi management · AG Grid · Highcharts</div>
+            <p class="timeline-copy">
+              Started with Angular dashboards for WiFi management — performance optimization, virtualized grids, and a
+              healthy dose of charts.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="work" aria-labelledby="work-title">
+      <div class="shell">
+        <div class="section-head">
+          <div class="kicker">Selected work</div>
+          <h2 id="work-title">Things I’ve built lately.</h2>
+        </div>
+
+        <div class="project-grid">
+          <article class="project-card">
+            <div class="project-thumb"><canvas id="proj-thumb-d1" aria-hidden="true"></canvas></div>
+            <h3 class="project-title">Zscaler URL Automation</h3>
+            <p class="project-copy">Python service that diffs a GitHub DNS list against the Zscaler API and ingests
+              changes nightly.</p>
+            <div class="tag-row"><span class="tag">Python</span><span class="tag">OAuth2</span></div>
+          </article>
+
+          <article class="project-card">
+            <div class="project-thumb"><canvas id="proj-thumb-d2" aria-hidden="true"></canvas></div>
+            <h3 class="project-title">MOAP DevOps Decks</h3>
+            <p class="project-copy">Programmatically generated CI/CD presentation decks for CARIAD stakeholders.</p>
+            <div class="tag-row"><span class="tag">Node.js</span><span class="tag">PptxGenJS</span></div>
+          </article>
+        </div>
+
+        <div class="recommendations" aria-label="Suggested next portfolio improvements">
+          <div class="mini-note">
+            <b>Add a proof section</b>
+            <p>Later, include metrics, outcomes, or before/after snapshots so projects feel less like labels and more
+              like impact.</p>
+          </div>
+          <div class="mini-note">
+            <b>Show architecture thinking</b>
+            <p>A tiny “How I approached it” panel for one flagship project can differentiate you from ordinary portfolio
+              sites.</p>
+          </div>
+          <div class="mini-note">
+            <b>Keep accent usage restrained</b>
+            <p>Purple works best as signal: ambient dots, focus states, timeline energy, and subtle hover feedback.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer" id="contact">
+      <div class="shell">Reference-only HTML mockup for your upcoming Next.js implementation.</div>
+    </footer>
+  </main>
+
+  <script>
+    (() => {
+      const accentRgb = "168,85,247";
+      const whiteRgb = "255,255,255";
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      function setupCanvas(canvas) {
+        const ctx = canvas.getContext("2d");
+        const dpr = window.devicePixelRatio || 1;
+        const resize = () => {
+          const rect = canvas.getBoundingClientRect();
+          canvas.width = Math.max(1, rect.width * dpr);
+          canvas.height = Math.max(1, rect.height * dpr);
+          ctx.setTransform(1, 0, 0, 1, 0, 0);
+          ctx.scale(dpr, dpr);
+        };
+        resize();
+        window.addEventListener("resize", resize);
+        return { ctx, resize };
+      }
+
+      // Hero ambient particles: purple becomes the third visual color after black and white.
+      const ambient = document.getElementById("ambient-field");
+      if (ambient) {
+        const { ctx } = setupCanvas(ambient);
+        const N = reduceMotion ? 90 : 190;
+        const particles = Array.from({ length: N }, (_, index) => ({
+          x: Math.random(),
+          y: Math.random(),
+          vx: (Math.random() - 0.5) * (index % 4 === 0 ? 0.00042 : 0.00026),
+          vy: (Math.random() - 0.5) * (index % 4 === 0 ? 0.00042 : 0.00026),
+          size: 0.55 + Math.random() * 1.45,
+          alpha: 0.16 + Math.random() * 0.42,
+          accent: index % 5 !== 0
+        }));
+
+        const renderAmbient = () => {
+          const rect = ambient.getBoundingClientRect();
+          const w = rect.width;
+          const h = rect.height;
+          ctx.clearRect(0, 0, w, h);
+
+          for (const p of particles) {
+            if (!reduceMotion) {
+              p.x += p.vx;
+              p.y += p.vy;
+              if (p.x < 0 || p.x > 1) p.vx *= -1;
+              if (p.y < 0 || p.y > 1) p.vy *= -1;
+            }
+
+            const rgb = p.accent ? accentRgb : whiteRgb;
+            ctx.fillStyle = `rgba(${rgb},${p.alpha})`;
+            ctx.beginPath();
+            ctx.arc(p.x * w, p.y * h, p.size, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          if (!reduceMotion) requestAnimationFrame(renderAmbient);
+        };
+        renderAmbient();
+      }
+
+      // Proper brace paths: particles interpolate onto sampled cubic Bézier curves.
+      const bracketCanvas = document.getElementById("bracket-cloud");
+      const nameZone = document.getElementById("name-zone");
+      if (bracketCanvas && nameZone) {
+        const { ctx } = setupCanvas(bracketCanvas);
+
+        const particlesPerSide = reduceMotion ? 44 : 72;
+        const N = particlesPerSide * 2;
+
+        const particles = Array.from({ length: N }, (_, index) => ({
+          x: Math.random(),
+          y: Math.random(),
+          scatterX: Math.random(),
+          scatterY: Math.random(),
+          vx: 0,
+          vy: 0,
+          accent: index % 3 === 0
+        }));
+
+        let hover = 0;
+        let targetHover = 0;
+
+        const activate = () => { targetHover = 1; };
+        const deactivate = () => { targetHover = 0; };
+
+        nameZone.addEventListener("mouseenter", activate);
+        nameZone.addEventListener("mouseleave", deactivate);
+        nameZone.addEventListener("focus", activate);
+        nameZone.addEventListener("blur", deactivate);
+
+        function cubicPoint(p0, p1, p2, p3, t) {
+          const mt = 1 - t;
+          const mt2 = mt * mt;
+          const t2 = t * t;
+          return {
+            x: (mt2 * mt * p0.x) + (3 * mt2 * t * p1.x) + (3 * mt * t2 * p2.x) + (t2 * t * p3.x),
+            y: (mt2 * mt * p0.y) + (3 * mt2 * t * p1.y) + (3 * mt * t2 * p2.y) + (t2 * t * p3.y)
+          };
+        }
+
+        function sampleBrace(side, progress, w, h) {
+          const mirror = side === "right" ? -1 : 1;
+          const originX = side === "right" ? w * 0.86 : w * 0.14;
+          const scaleX = Math.min(w * 0.078, 64);
+          const top = h * 0.14;
+          const mid = h * 0.5;
+          const bottom = h * 0.86;
+
+          const segments = [
+            [
+              { x: originX + mirror * scaleX * 0.52, y: top },
+              { x: originX + mirror * scaleX * 0.10, y: top },
+              { x: originX + mirror * scaleX * 0.10, y: top + h * 0.145 },
+              { x: originX + mirror * scaleX * 0.10, y: top + h * 0.215 }
+            ],
+            [
+              { x: originX + mirror * scaleX * 0.10, y: top + h * 0.215 },
+              { x: originX + mirror * scaleX * 0.10, y: mid - h * 0.10 },
+              { x: originX - mirror * scaleX * 0.30, y: mid - h * 0.055 },
+              { x: originX - mirror * scaleX * 0.72, y: mid }
+            ],
+            [
+              { x: originX - mirror * scaleX * 0.72, y: mid },
+              { x: originX - mirror * scaleX * 0.30, y: mid + h * 0.055 },
+              { x: originX + mirror * scaleX * 0.10, y: mid + h * 0.10 },
+              { x: originX + mirror * scaleX * 0.10, y: bottom - h * 0.215 }
+            ],
+            [
+              { x: originX + mirror * scaleX * 0.10, y: bottom - h * 0.215 },
+              { x: originX + mirror * scaleX * 0.10, y: bottom - h * 0.145 },
+              { x: originX + mirror * scaleX * 0.10, y: bottom },
+              { x: originX + mirror * scaleX * 0.52, y: bottom }
+            ]
+          ];
+
+          const segmentFloat = Math.min(3.9999, progress * segments.length);
+          const segmentIndex = Math.floor(segmentFloat);
+          const localT = segmentFloat - segmentIndex;
+          const s = segments[segmentIndex];
+          return cubicPoint(s[0], s[1], s[2], s[3], localT);
+        }
+
+        const renderBrackets = () => {
+          const rect = bracketCanvas.getBoundingClientRect();
+          const w = rect.width;
+          const h = rect.height;
+          ctx.clearRect(0, 0, w, h);
+          hover += (targetHover - hover) * (reduceMotion ? 1 : 0.085);
+
+          for (let i = 0; i < N; i++) {
+            const particle = particles[i];
+            const side = i < particlesPerSide ? "left" : "right";
+            const localIndex = i % particlesPerSide;
+            const progress = particlesPerSide === 1 ? 0 : localIndex / (particlesPerSide - 1);
+            const bracketPos = sampleBrace(side, progress, w, h);
+            const scatter = { x: particle.scatterX * w, y: particle.scatterY * h };
+            const target = {
+              x: scatter.x + (bracketPos.x - scatter.x) * hover,
+              y: scatter.y + (bracketPos.y - scatter.y) * hover
+            };
+
+            const x = particle.x * w;
+            const y = particle.y * h;
+            const force = reduceMotion ? 0.26 : 0.11;
+            particle.vx = particle.vx * 0.78 + (target.x - x) * force;
+            particle.vy = particle.vy * 0.78 + (target.y - y) * force;
+            particle.x = (x + particle.vx) / w;
+            particle.y = (y + particle.vy) / h;
+
+            const rgb = particle.accent ? accentRgb : whiteRgb;
+            const alpha = 0.12 + hover * (particle.accent ? 0.78 : 0.62);
+            ctx.fillStyle = `rgba(${rgb},${alpha})`;
+            ctx.beginPath();
+            ctx.arc(particle.x * w, particle.y * h, 1.15 + hover * 0.52, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          if (!reduceMotion) requestAnimationFrame(renderBrackets);
+        };
+        renderBrackets();
+      }
+
+      function makeThumb(canvasId, shapeFn) {
+        const canvas = document.getElementById(canvasId);
+        if (!canvas) return;
+        const { ctx } = setupCanvas(canvas);
+        const N = reduceMotion ? 84 : 154;
+        const particles = Array.from({ length: N }, (_, index) => ({
+          x: Math.random(),
+          y: Math.random(),
+          vx: 0,
+          vy: 0,
+          accent: index % 4 === 0
+        }));
+        let t = 0;
+
+        const render = () => {
+          const rect = canvas.getBoundingClientRect();
+          const w = rect.width;
+          const h = rect.height;
+          ctx.clearRect(0, 0, w, h);
+          if (!reduceMotion) t += 0.005;
+
+          particles.forEach((p, index) => {
+            const target = shapeFn(index / N, t, w, h);
+            const x = p.x * w;
+            const y = p.y * h;
+            p.vx = p.vx * 0.85 + (target.x - x) * 0.04;
+            p.vy = p.vy * 0.85 + (target.y - y) * 0.04;
+            p.x = (x + p.vx) / w;
+            p.y = (y + p.vy) / h;
+
+            const rgb = p.accent ? accentRgb : whiteRgb;
+            const alpha = 0.34 + Math.sin(t * 2 + index) * 0.16;
+            ctx.fillStyle = `rgba(${rgb},${alpha})`;
+            ctx.beginPath();
+            ctx.arc(p.x * w, p.y * h, 1.12, 0, Math.PI * 2);
+            ctx.fill();
+          });
+
+          if (!reduceMotion) requestAnimationFrame(render);
+        };
+        render();
+      }
+
+      makeThumb("proj-thumb-d1", (i, t, w, h) => {
+        const cx = w / 2;
+        const cy = h / 2;
+        const ring = Math.floor(i * 3);
+        const angle = (i * 7.13 + t * 0.5) * Math.PI;
+        const radius = 18 + ring * 20 + Math.sin(t + i) * 3;
+        return {
+          x: cx + Math.cos(angle) * radius,
+          y: cy + Math.sin(angle) * radius * 0.62
+        };
+      });
+
+      makeThumb("proj-thumb-d2", (i, t, w, h) => {
+        const lane = Math.floor(i / 40);
+        const step = (i % 40) / 40;
+        return {
+          x: 20 + step * (w - 40) + Math.sin(t + i) * 2,
+          y: 26 + lane * 28 + Math.cos(t + i * 0.3) * 2
+        };
+      });
+    })();
+  </script>
+</body>
+
+</html>

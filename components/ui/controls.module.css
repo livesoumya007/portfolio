@@ -1,0 +1,61 @@
+/* Shared look for CTA (<button>) and LinkButton (<a>). Both render through
+   GlassSurface, so these classes only handle box/typography/variant tokens —
+   the ring, bloom and fill come from GlassSurface + the --glass-* tokens. */
+
+.control {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 46px;
+  padding: 0 22px;
+  border: none;
+  appearance: none;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    transform 180ms ease,
+    background 180ms ease,
+    box-shadow 180ms ease,
+    color 180ms ease;
+}
+
+.control:hover {
+  transform: translateY(-1px);
+}
+
+.control:focus-visible {
+  outline: 2px solid var(--color-signal);
+  outline-offset: 2px;
+}
+
+.control:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* primary — filled inverted; overrides the glass fill via tokens so cross-
+   module cascade order is irrelevant */
+.primary {
+  --glass-fill: var(--color-fg);
+  --glass-elevation: var(--cta-shadow);
+  color: var(--color-bg);
+}
+
+.primary:hover {
+  --glass-elevation: var(--cta-shadow-hover);
+}
+
+/* ghost — keeps the glassy fill; just sets text + a brighter hover fill */
+.ghost {
+  color: var(--color-fg);
+}
+
+.ghost:hover {
+  --glass-fill: var(--color-surface-raised);
+}

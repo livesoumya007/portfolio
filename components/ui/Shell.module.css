@@ -1,0 +1,21 @@
+.shell {
+  --glass-fill: var(--shell-fill);
+  --glass-blur: var(--shell-blur);
+  --glass-saturate: var(--shell-saturate);
+  position: relative;
+  overflow: hidden;
+  padding: clamp(20px, 4vw, 56px);
+}
+
+/* The specular top edge — the one high-contrast detail on an otherwise quiet
+   container. A real element rather than a pseudo-element: GlassSurface's own
+   ::before/::after are already the ring and the ambient bloom. */
+.edge {
+  position: absolute;
+  top: 0;
+  left: 12%;
+  right: 12%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--shell-edge), transparent);
+  pointer-events: none;
+}

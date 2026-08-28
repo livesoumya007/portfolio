@@ -1,0 +1,107 @@
+/* ── Track ────────────────────────────────────────────────────────────── */
+.track {
+  display: flex;
+  gap: clamp(16px, 2vw, 22px);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  /* Vertical room for the card hover lift + shadow; no negative horizontal
+     margin — the peek comes from the track being narrower than its content,
+     not from bleeding past a clipped ancestor. */
+  padding: 6px 2px 12px;
+  cursor: grab;
+  touch-action: pan-y;
+}
+
+.track::-webkit-scrollbar {
+  display: none;
+}
+
+.track.dragging,
+.dragging {
+  cursor: grabbing;
+  scroll-behavior: auto;
+}
+
+/* ── Card ─────────────────────────────────────────────────────────────── */
+/* Tuned to --max-w-content (1160px): inside the section's gutter the track
+   is ~1040px, so 400px cards give 2 full + a peeked third. At a 390px
+   viewport the track is ~350px, so the 232px floor gives 1 full + a clear
+   peek. */
+.card {
+  flex: none;
+  width: clamp(232px, 30vw, 400px);
+  scroll-snap-align: start;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.chip {
+  --pill-size: 10.5px;
+  --pill-tracking: 0.02em;
+  --pill-transform: none;
+  --pill-padding: 5px 11px;
+}
+
+.cta {
+  min-height: 40px;
+  padding: 0 17px;
+  font-size: 13px;
+}
+
+/* ── Dots ─────────────────────────────────────────────────────────────── */
+.dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: clamp(20px, 3vw, 28px);
+}
+
+.dot {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  padding: 0 10px;
+  border: none;
+  background: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+.dot::after {
+  content: '';
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--color-border-strong);
+  transition:
+    width 450ms cubic-bezier(0.22, 1, 0.36, 1),
+    background 400ms ease,
+    box-shadow 400ms ease;
+}
+
+.dot[data-active]::after {
+  width: 30px;
+  background: var(--color-signal);
+  box-shadow: 0 0 14px var(--color-signal-glow);
+}
+
+.dot:focus-visible {
+  outline: 2px solid var(--color-signal);
+  outline-offset: 2px;
+  border-radius: var(--radius-xs);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dot::after {
+    transition: none;
+  }
+}

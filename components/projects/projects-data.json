@@ -1,0 +1,32 @@
+{
+  "kicker": "Selected work",
+  "heading": "Projects",
+  "intro": "Swipe or drag through a few things I've built.",
+  "projects": [
+    {
+      "index": "01",
+      "year": "2026",
+      "title": "Project One",
+      "description": "Placeholder description. One or two lines on what the project does and the problem it solves.",
+      "stack": ["Next.js", "TypeScript", "Postgres"],
+      "liveUrl": "#",
+      "repoUrl": "#"
+    },
+    {
+      "index": "02",
+      "year": "2025",
+      "title": "Project Two",
+      "description": "Placeholder description. One or two lines on what the project does and the problem it solves.",
+      "stack": ["React", "Node.js", "Redis"],
+      "liveUrl": "#"
+    },
+    {
+      "index": "03",
+      "year": "2025",
+      "title": "Project Three",
+      "description": "Placeholder description. One or two lines on what the project does and the problem it solves.",
+      "stack": ["React", "D3.js", "Tailwind"],
+      "repoUrl": "#"
+    }
+  ]
+}
