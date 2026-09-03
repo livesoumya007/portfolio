@@ -1,6 +1,7 @@
-/* Tablet + desktop nav. ONE tree: `data-condensed` on the root drives every
-   full ↔ condensed difference through CSS transitions, so the bar reads as a
-   single element resizing. Nothing here is swapped or re-mounted. */
+/* Unified nav — ONE tree for every viewport. `data-condensed` on the root
+   drives every full ↔ condensed difference through CSS transitions, so the
+   bar reads as a single element resizing. Nothing here is swapped or
+   re-mounted. */
 
 .rail {
   --morph: 0.48s cubic-bezier(0.22, 1, 0.36, 1);
@@ -24,9 +25,7 @@
      there is no fixed target to transition to, and `fit-content` itself is
      not an animatable value. Instead `min-width` (two concrete lengths, so it
      transitions cleanly) carries the full state's span, and the effective
-     width is max(min-width, content). As min-width interpolates to 0 and the
-     labels collapse in the same window, the bar shrinks continuously — with
-     no measurement JS and no layout-thrashing width animation. */
+     width is max(min-width, content). */
   width: fit-content;
   min-width: min(100% - 2 * var(--nav-inset), var(--max-w-content));
   max-width: calc(100% - 2 * var(--nav-inset));
@@ -60,40 +59,26 @@
   letter-spacing: -0.015em;
   color: var(--color-fg);
   text-decoration: none;
+  overflow: hidden;
 }
 
-/* Wordmark and monogram are both children of the same brand element and
-   cross-fade between the two states — swapping one element for the other
-   would break the "one element resizing" reading. */
-.wordmark,
-.monogram {
+.wordmark {
   display: flex;
   align-items: center;
   overflow: hidden;
   white-space: nowrap;
+  max-width: 200px;
+  opacity: 1;
   transition:
     max-width var(--morph),
     opacity 0.3s ease;
 }
 
-.wordmark {
-  max-width: 200px;
-  opacity: 1;
-}
-
-.monogram {
-  max-width: 0;
-  opacity: 0;
-}
-
+/* Wordmark collapses in condensed — the ProgressRing (via order) takes over
+   as the visual brand anchor. */
 .rail[data-condensed] .wordmark {
   max-width: 0;
   opacity: 0;
-}
-
-.rail[data-condensed] .monogram {
-  max-width: 40px;
-  opacity: 1;
 }
 
 .brace {
@@ -102,6 +87,23 @@
 
 .dot {
   color: var(--color-signal);
+}
+
+/* ── ProgressRing wrapper ──────────────────────────────────────────── */
+
+/* In full mode: order pushes it after the social icons / socialDivider.
+   In condensed mode: order:-1 brings it before the brand (first in the rail). */
+.progressWrap {
+  flex: none;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+  order: 99;
+}
+
+.rail[data-condensed] .progressWrap {
+  order: -1;
 }
 
 /* ── Divider — condensed state only ─────────────────────────────────── */
@@ -160,9 +162,13 @@
   color: var(--color-fg-muted);
   text-decoration: none;
   white-space: nowrap;
-  transition:
-    color 0.35s ease,
-    padding var(--morph);
+  /* Paint properties only. `padding` is deliberately NOT transitioned: it
+     changes when this link becomes active, and Motion's `layout` animation on
+     this element measures its target box in the commit frame. A CSS
+     transition here would still be at its start value at that moment, so
+     Motion would animate toward a stale box and then fight the transition the
+     whole way. Motion owns every layout-affecting change on this element. */
+  transition: color 0.35s ease;
 }
 
 .link:hover {
@@ -179,24 +185,38 @@
 }
 
 .rail[data-condensed] .link {
-  padding: 12px;
+  padding: 10px;
 }
 
 .rail[data-condensed] .link[aria-current] {
   padding: 12px 14px;
 }
 
-.icon {
+/* Wrapper exists so Motion has a real element to position-correct — a Tabler
+   icon component can't take a `layout` prop itself. */
+.iconWrap {
   flex: none;
   position: relative;
   z-index: 1;
-  opacity: 0.85;
+  display: flex;
 }
 
-/* The design describes a narrow-desktop tier where labels fade out around
-   1000px. That band is already condensed here — the rail takes over below
-   1024px — so the labels need no second collapse rule of their own; the
-   condensed state below is the only thing that hides them. */
+.icon {
+  display: block;
+  opacity: 0.85;
+  transition: transform 0.35s ease;
+}
+
+/* Active icon grows 6% in condensed as the pill arrives. */
+.rail[data-condensed] .link[aria-current] .icon {
+  transform: scale(1.06);
+}
+
+/* The label's WIDTH is animated by Motion (`layout` on this span), not by CSS.
+   max-width/margin-left below therefore snap to their final values in the
+   commit frame, which is exactly what lets Motion measure a correct target;
+   the visible growth is Motion's transform. Only opacity — a paint property
+   Motion isn't driving — transitions here. */
 .label {
   position: relative;
   z-index: 1;
@@ -204,10 +224,14 @@
   overflow: hidden;
   margin-left: 8px;
   max-width: 140px;
-  transition:
-    max-width var(--morph),
-    margin-left var(--morph),
-    opacity 0.35s ease;
+  transition: opacity 0.35s ease;
+}
+
+/* Held at its natural width and position-corrected, so the text glides with
+   the pill instead of stretching as the label box scales open. */
+.labelText {
+  display: block;
+  white-space: nowrap;
 }
 
 .rail[data-condensed] .label {
@@ -255,58 +279,64 @@
     inset 0 1px 0 var(--glass-inner-hi);
 }
 
-/* ── CTA ────────────────────────────────────────────────────────────── */
+/* ── Social icons — desktop only ────────────────────────────────────── */
 
-/* Two-class selector so this beats controls.module.css `.control` regardless
-   of stylesheet order — the same technique the old navbar used for `.link`. */
-.rail .cta {
+.socials {
   flex: none;
-  min-height: 40px;
-  width: auto;
-  gap: 0;
-  padding: 0 clamp(12px, 1.6vw, 20px);
-  font-size: 13.5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rail[data-condensed] .socials {
+  display: none;
+}
+
+.socialDisc {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.94);
+  color: var(--color-bg);
+  text-decoration: none;
   transition:
-    transform 180ms ease,
-    box-shadow 180ms ease,
-    width var(--morph),
-    padding var(--morph);
+    background 350ms ease,
+    transform 350ms ease,
+    box-shadow 350ms ease;
 }
 
-.rail[data-condensed] .cta {
-  width: 40px;
-  padding: 0;
+.socialDisc:hover {
+  background: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px -12px rgba(255, 255, 255, 0.6);
 }
 
-.ctaLabel {
-  display: block;
-  overflow: hidden;
-  white-space: nowrap;
-  /* CTA text drops just below where the nav labels do, per the design. */
-  margin-left: clamp(0px, calc((100vw - 1100px) * 99), 8px);
-  max-width: clamp(0px, calc((100vw - 1100px) * 99), 90px);
-  transition:
-    max-width var(--morph),
-    margin-left var(--morph),
-    opacity 0.35s ease;
+.socialDisc:focus-visible {
+  outline: 2px solid var(--color-signal);
+  outline-offset: 2px;
 }
 
-.rail[data-condensed] .ctaLabel {
-  max-width: 0;
-  margin-left: 0;
-  opacity: 0;
+/* ── Social divider — desktop only (between socials and ProgressRing) ── */
+
+.socialDivider {
+  flex: none;
+  width: 1px;
+  height: 22px;
+  background: var(--color-border-strong);
+}
+
+.rail[data-condensed] .socialDivider {
+  display: none;
 }
 
 /* ── Reduced motion ─────────────────────────────────────────────────── */
 
 @media (prefers-reduced-motion: reduce) {
   .rail,
-  .rail *,
-  .rail .cta {
+  .rail * {
     transition-duration: 0.01ms !important;
-  }
-
-  .rail .cta:hover {
-    transform: none;
   }
 }

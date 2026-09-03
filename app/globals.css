@@ -3,126 +3,136 @@
 /* ─── Runtime values: override these per theme ──────────────────────── */
 
 :root {
-  --color-bg:             #0a0a0a;
-  --color-surface:        rgba(255, 255, 255, 0.035);
+  --color-bg: #0a0a0a;
+  --color-surface: rgba(255, 255, 255, 0.035);
   --color-surface-raised: rgba(255, 255, 255, 0.055);
-  --color-border:         rgba(255, 255, 255, 0.09);
-  --color-border-strong:  rgba(255, 255, 255, 0.16);
-  --color-fg:             #fafafa;
-  --color-fg-muted:       rgba(255, 255, 255, 0.62);
-  --color-fg-subtle:      rgba(255, 255, 255, 0.44);
-  --color-fg-faint:       rgba(255, 255, 255, 0.28);
-  --color-signal:         #a855f7;
+  --color-border: rgba(255, 255, 255, 0.09);
+  --color-border-strong: rgba(255, 255, 255, 0.16);
+  --color-fg: #fafafa;
+  --color-fg-muted: rgba(255, 255, 255, 0.62);
+  --color-fg-subtle: rgba(255, 255, 255, 0.44);
+  --color-fg-faint: rgba(255, 255, 255, 0.28);
+  --color-signal: #a855f7;
   --color-signal-surface: rgba(168, 85, 247, 0.16);
-  --color-signal-glow:    rgba(168, 85, 247, 0.28);
+  --color-signal-glow: rgba(168, 85, 247, 0.28);
 
-  --color-nav-bg:              rgba(10, 10, 10, 0.72);
-  --color-nav-border-rest:     rgba(255, 255, 255, 0.08);
-  --color-nav-border-scrolled: rgba(255, 255, 255, 0.20);
+  --color-nav-bg: rgba(10, 10, 10, 0.72);
+  --color-nav-border-rest: rgba(255, 255, 255, 0.08);
+  --color-nav-border-scrolled: rgba(255, 255, 255, 0.2);
 
   /* Floating nav geometry. The bar is detached from the page edge and its
      height changes as it condenses, so nothing may compensate for it with a
      fixed padding — sections clear it via scroll-padding-top below. */
-  --nav-inset:             16px;
-  --nav-height:            64px;
-  --nav-height-condensed:  56px;
+  --nav-inset: 16px;
+  --nav-height: 64px;
+  --nav-height-condensed: 56px;
 
   /* ─── Liquid glass: conic-gradient border ring + corner bloom ──────── */
-  --glass-glow-white:   rgba(255, 255, 255, 0.72);  /* lit corner: top-left  */
-  --glass-glow-violet:  var(--color-signal);        /* lit corner: btm-right */
-  --glass-glow-dim:     rgba(255, 255, 255, 0.06);  /* the two unlit corners */
+  --glass-glow-white: rgba(255, 255, 255, 0.72); /* lit corner: top-left  */
+  --glass-glow-violet: var(--color-signal); /* lit corner: btm-right */
+  --glass-glow-dim: rgba(255, 255, 255, 0.06); /* the two unlit corners */
   --glass-border-width: 1px;
-  --glass-fill:         var(--color-surface);       /* glassy body           */
-  --glass-blur:         16px;
-  --glass-saturate:     100%;                        /* surfaces override     */
-  --glass-inner-hi:     rgba(255, 255, 255, 0.08);  /* inset 0 1px highlight  */
+  --glass-fill: var(--color-surface); /* glassy body           */
+  --glass-blur: 16px;
+  --glass-saturate: 100%; /* surfaces override     */
+  --glass-inner-hi: rgba(255, 255, 255, 0.08); /* inset 0 1px highlight  */
   /* diagonal-ring stops (white TL → violet BR), reference-matched + soft.
      White flanks kept close to the violet flanks so the lit white corner
      doesn't read as a wider border than the rest of the ring. */
-  --glass-ring-white-2:  rgba(230, 230, 235, 0.24);
-  --glass-ring-white-3:  rgba(235, 235, 240, 0.20);
-  --glass-ring-violet:   rgba(180, 150, 255, 0.55);
+  --glass-ring-white-2: rgba(230, 230, 235, 0.24);
+  --glass-ring-white-3: rgba(235, 235, 240, 0.2);
+  --glass-ring-violet: rgba(180, 150, 255, 0.55);
   --glass-ring-violet-2: rgba(150, 130, 210, 0.22);
-  --glass-ring-violet-3: rgba(150, 130, 200, 0.20);
-  --glass-ring-dim:      rgba(255, 255, 255, 0.10);
-  --glass-ring-dim-2:    rgba(255, 255, 255, 0.07);
+  --glass-ring-violet-3: rgba(150, 130, 200, 0.2);
+  --glass-ring-dim: rgba(255, 255, 255, 0.1);
+  --glass-ring-dim-2: rgba(255, 255, 255, 0.07);
   /* card corner bloom — faint, tight (reference-matched) */
-  --glass-bloom-white:  rgba(255, 255, 255, 0.13);
+  --glass-bloom-white: rgba(255, 255, 255, 0.13);
   --glass-bloom-violet: rgba(180, 150, 255, 0.13);
   --glass-bloom-size-x: 220px;
   --glass-bloom-size-y: 150px;
-  --glass-bloom-blur:   4px;
+  --glass-bloom-blur: 4px;
   /* subtle preset ring (navbar) */
-  --glass-glow-faint:   rgba(255, 255, 255, 0.10);
+  --glass-glow-faint: rgba(255, 255, 255, 0.1);
   --glass-glow-faint-hi: rgba(255, 255, 255, 0.18);
   /* split preset ring (CTAs): white left half, violet right half */
-  --glass-split-white:     rgba(255, 255, 255, 0.90);
-  --glass-split-white-2:   rgba(255, 255, 255, 0.85);
-  --glass-split-violet:    rgba(167, 139, 250, 0.90);
-  --glass-split-violet-2:  rgba(167, 139, 250, 0.85);
+  --glass-split-white: rgba(255, 255, 255, 0.9);
+  --glass-split-white-2: rgba(255, 255, 255, 0.85);
+  --glass-split-violet: rgba(167, 139, 250, 0.9);
+  --glass-split-violet-2: rgba(167, 139, 250, 0.85);
   --glass-split-handoff-b: rgba(220, 200, 255, 0.55);
-  --glass-split-handoff-t: rgba(220, 235, 255, 0.50);
+  --glass-split-handoff-t: rgba(220, 235, 255, 0.5);
   /* filled (primary) control elevation */
-  --cta-shadow:         0 12px 40px rgba(255, 255, 255, 0.14);
-  --cta-shadow-hover:   0 18px 44px rgba(255, 255, 255, 0.18);
+  --cta-shadow: 0 12px 40px rgba(255, 255, 255, 0.14);
+  --cta-shadow-hover: 0 18px 44px rgba(255, 255, 255, 0.18);
 
   /* card body (reference-matched: dark translucent glass panel) */
-  --card-fill:          linear-gradient(180deg,
-                          rgba(28, 26, 34, 0.55) 0%,
-                          rgba(10, 10, 12, 0.85) 100%);
-  --card-blur:          40px;
-  --card-saturate:      160%;
+  --card-fill: linear-gradient(
+    180deg,
+    rgba(28, 26, 34, 0.55) 0%,
+    rgba(10, 10, 12, 0.85) 100%
+  );
+  --card-blur: 40px;
+  --card-saturate: 160%;
 
   /* card icon tiles */
-  --card-icon-size:     64px;   /* default tile size; Skills overrides to 64px */
-  --icon-hover-glow:    radial-gradient(circle at 50% 35%,
-                          rgba(255, 255, 255, 0.16), transparent 70%);
+  --card-icon-size: 64px; /* default tile size; Skills overrides to 64px */
+  --icon-hover-glow: radial-gradient(
+    circle at 50% 35%,
+    rgba(255, 255, 255, 0.16),
+    transparent 70%
+  );
 
   /* Signal gradient. The Experience/Projects designs used a second blue
      accent for this; mapped back to white → signal so --color-signal stays
      the only accent in the system. Deliberately NOT registered with
      Tailwind — this is a background, not a colour. */
-  --gradient-bullet:   linear-gradient(135deg,
-                         rgba(255, 255, 255, 0.85),
-                         var(--color-signal));
+  --gradient-bullet: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.85),
+    var(--color-signal)
+  );
 
   /* Section shell — the large outer glass container Experience and Projects
      sit inside. Deliberately quieter than --card-*: flatter, darker fill, no
      saturate boost, one wide ambient bloom instead of two corner blooms, and
      a bright specular top edge (rendered by ui/Shell.tsx) as the one loud
      detail. See the `shell` glow preset in GlassSurface.module.css. */
-  --shell-fill:          linear-gradient(155deg,
-                           rgba(255, 255, 255, 0.05) 0%,
-                           rgba(255, 255, 255, 0.018) 45%,
-                           rgba(255, 255, 255, 0.032) 100%);
-  --shell-blur:           30px;
-  --shell-saturate:       130%;
-  --shell-edge:            rgba(255, 255, 255, 0.45);
-  --shell-bloom-color:     var(--color-signal-glow);
-  --shell-bloom-size-x:    560px;
-  --shell-bloom-size-y:    420px;
-  --shell-bloom-blur:      50px;
+  --shell-fill: linear-gradient(
+    155deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0.018) 45%,
+    rgba(255, 255, 255, 0.032) 100%
+  );
+  --shell-blur: 30px;
+  --shell-saturate: 130%;
+  --shell-edge: rgba(255, 255, 255, 0.45);
+  --shell-bloom-color: var(--color-signal-glow);
+  --shell-bloom-size-x: 560px;
+  --shell-bloom-size-y: 420px;
+  --shell-bloom-blur: 50px;
 
   /* One heading scale for every major section (Skills, Experience, Projects). */
   --text-section-heading: clamp(38px, 7vw, 66px);
 
-  --radius-xs:   8px;
-  --radius-sm:   12px;
-  --radius-md:   16px;
-  --radius-lg:   24px;
-  --radius-xl:   32px;
+  --radius-xs: 8px;
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
   --radius-full: 999px;
 
-  --spacing-xs:  8px;
-  --spacing-sm:  12px;
-  --spacing-md:  16px;
-  --spacing-lg:  24px;
-  --spacing-xl:  32px;
+  --spacing-xs: 8px;
+  --spacing-sm: 12px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
   --spacing-xxl: 64px;
 
-  --spacing-section: 84px;
-  --spacing-hero:    108px;
-  --max-w-content:   1160px;
+  --spacing-section: 48px;
+  --spacing-skill-sectoin: 64px;
+  --spacing-hero: 108px;
+  --max-w-content: 1160px;
 
   --shadow-page: 0 24px 90px rgba(0, 0, 0, 0.42);
 }
@@ -133,24 +143,24 @@
 /* ─── Tailwind registration: generate utilities from the vars above ─── */
 
 @theme inline {
-  --color-bg:             var(--color-bg);
-  --color-surface:        var(--color-surface);
+  --color-bg: var(--color-bg);
+  --color-surface: var(--color-surface);
   --color-surface-raised: var(--color-surface-raised);
-  --color-border:         var(--color-border);
-  --color-border-strong:  var(--color-border-strong);
-  --color-fg:             var(--color-fg);
-  --color-fg-muted:       var(--color-fg-muted);
-  --color-fg-subtle:      var(--color-fg-subtle);
-  --color-fg-faint:       var(--color-fg-faint);
-  --color-signal:         var(--color-signal);
+  --color-border: var(--color-border);
+  --color-border-strong: var(--color-border-strong);
+  --color-fg: var(--color-fg);
+  --color-fg-muted: var(--color-fg-muted);
+  --color-fg-subtle: var(--color-fg-subtle);
+  --color-fg-faint: var(--color-fg-faint);
+  --color-signal: var(--color-signal);
   --color-signal-surface: var(--color-signal-surface);
-  --color-signal-glow:    var(--color-signal-glow);
+  --color-signal-glow: var(--color-signal-glow);
 
-  --radius-xs:   var(--radius-xs);
-  --radius-sm:   var(--radius-sm);
-  --radius-md:   var(--radius-md);
-  --radius-lg:   var(--radius-lg);
-  --radius-xl:   var(--radius-xl);
+  --radius-xs: var(--radius-xs);
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
   --radius-full: var(--radius-full);
 
   --spacing-xs: var(--spacing-xs);
@@ -161,7 +171,7 @@
   --spacing-xxl: var(--spacing-xxl);
 
   --font-heading: var(--font-geist-sans), sans-serif;
-  --font-sans:    var(--font-inter), sans-serif;
+  --font-sans: var(--font-inter), sans-serif;
 
   /* Custom Device Breakpoints */
   --breakpoint-sm: 600px;
@@ -173,18 +183,25 @@
 /* ─── Base styles ───────────────────────────────────────────────────── */
 
 /* Every in-page jump goes through scrollIntoView, which honours this. Without
-   it a nav click parks the section heading underneath the floating bar. Sized
-   to the condensed rail, since that is the state the nav is in by the time
-   any anchor jump lands. */
+   it a nav click parks the section heading underneath the floating bar. Mobile
+   and tablet use the condensed rail height; desktop uses the full bar. */
 html {
   scroll-padding-top: calc(
     var(--nav-inset) + var(--nav-height-condensed) + var(--spacing-md)
   );
 }
 
+@media (min-width: 1024px) {
+  html {
+    scroll-padding-top: calc(
+      var(--nav-inset) + var(--nav-height) + var(--spacing-md)
+    );
+  }
+}
+
 body {
-  background:     var(--color-bg);
-  color:          var(--color-fg);
-  font-family:    var(--font-sans);
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
   letter-spacing: -0.01em;
 }

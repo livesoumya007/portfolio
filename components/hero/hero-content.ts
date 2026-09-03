@@ -1,7 +1,9 @@
+import { PROFILE } from '@/lib/profile';
+
 export const EYEBROW = 'Software Engineer, India';
 
 export const TITLE_LEAD = "Hey, I'm ";
-export const NAME = 'Soumya Panda';
+export const NAME = PROFILE.name;
 
 export const SUBTITLE =
   'I build interfaces that feel deliberate, fast, and production-ready.';

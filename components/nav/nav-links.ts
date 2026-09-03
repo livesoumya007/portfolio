@@ -30,9 +30,8 @@ export const SECTION_IDS = LINKS.map((link) => link.id);
 /** The section whose bottom edge drives the condense transition. */
 export const HERO_ID = 'home';
 
-export const CONTACT_HREF = '#contact';
-
 /** Shared morph timing — the design's easing, used by every state change
  *  that has to read as one element resizing. */
 export const MORPH_EASE = [0.22, 1, 0.36, 1] as const;
 export const MORPH_DURATION = 0.48;
+

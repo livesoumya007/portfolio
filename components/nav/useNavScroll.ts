@@ -1,38 +1,25 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useMotionValue, type MotionValue } from 'motion/react';
 import { ACTIVE_SECTION_BAND } from '@/lib/hooks/useActiveSection';
-import { HERO_ID } from './nav-links';
-
-/* Hysteresis bounds for the condense transition. Two different thresholds on
-   the same edge is exactly what an IntersectionObserver cannot express, which
-   is why this is a scroll listener: a single IO threshold would flip back and
-   forth every frame while the reader hovers on the boundary. */
-const CONDENSE_AT = 0;
-const EXPAND_AT = 80;
 
 export type NavScroll = {
-  /** True once the hero's bottom edge has passed the top of the viewport. */
-  condensed: boolean;
   /** 0–1 reading progress, in section units. */
   progress: MotionValue<number>;
 };
 
 /**
- * One rAF-throttled passive scroll listener feeding both scroll-derived
- * outputs of the nav.
+ * One rAF-throttled passive scroll listener feeding the scroll progress of the nav.
  *
  * `progress` is a MotionValue rather than state on purpose: the ring is
- * repainted on every scroll frame, and routing that through React would mean
- * a full re-render of the nav per frame. Writing into a MotionValue keeps it
+ * repainted on every scroll frame, and writing into a MotionValue keeps it
  * on the compositor with zero re-renders.
  */
 export function useNavScroll(
   sectionIds: readonly string[],
   activeIndex: number,
 ): NavScroll {
-  const [condensed, setCondensed] = useState(false);
   const progress = useMotionValue(0);
 
   /* Read inside the scroll callback without re-subscribing the listener on
@@ -57,15 +44,6 @@ export function useNavScroll(
 
     const measure = () => {
       raf = 0;
-
-      const hero = document.getElementById(HERO_ID);
-      if (hero) {
-        const heroBottom = hero.getBoundingClientRect().bottom;
-        setCondensed((prev) =>
-          prev ? heroBottom < EXPAND_AT : heroBottom <= CONDENSE_AT,
-        );
-      }
-
       measureProgress();
     };
 
@@ -85,7 +63,7 @@ export function useNavScroll(
     };
   }, [measureProgress]);
 
-  return { condensed, progress };
+  return { progress };
 }
 
 /**

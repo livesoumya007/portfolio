@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
-import type { ComponentPropsWithoutRef, ReactNode } from 'react';
-import { m, useInView } from 'motion/react';
-import { useReducedMotion } from '@/lib/hooks/useReducedMotion';
-import { cn } from '@/lib/utils';
-import { GlassSurface } from './GlassSurface';
-import styles from './AccordionCard.module.css';
+import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
+import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import { m, useInView } from "motion/react";
+import { useReducedMotion } from "@/lib/hooks/useReducedMotion";
+import { cn } from "@/lib/utils";
+import { GlassSurface } from "./GlassSurface";
+import styles from "./AccordionCard.module.css";
 
 export type AccordionCardProps = {
   /** Always-visible content; becomes the label of the toggle button. */
@@ -20,10 +20,22 @@ export type AccordionCardProps = {
   /** Forces the initial state instead of waiting on autoOpen — the row then
    *  behaves as if the user had already toggled it. */
   defaultOpen?: boolean;
-} & Omit<ComponentPropsWithoutRef<'div'>, 'children'>;
+} & Omit<ComponentPropsWithoutRef<"div">, "children">;
 
-const EXPAND_TRANSITION = { duration: 0.55, ease: [0.22, 1, 0.36, 1] as const };
+/* A gentler curve than a typical ease-out: [0.22, 1, 0.36, 1] (quint-out)
+   moves fast right out of the gate and only decelerates near the end, which
+   reads as an abrupt "pop" the instant the row crosses the trigger line.
+   [0.65, 0, 0.35, 1] ramps up and settles gradually at both ends, so the
+   whole expand plays out as one smooth motion instead of a quick snap
+   followed by a slow tail. Duration is also longer (0.75s vs 0.55s) so that
+   gradual ramp has room to actually read as gradual. */
+const EXPAND_TRANSITION = { duration: 0.75, ease: [0.65, 0, 0.35, 1] as const };
 const REDUCED_TRANSITION = { duration: 0 };
+/* Content fade-in starts this far into the height expansion, so the text
+   settles in only once the row has mostly finished growing rather than
+   racing the box open. Kept as a fraction of EXPAND_TRANSITION's duration
+   so the two stay in proportion if the duration above ever changes. */
+const REVEAL_DELAY = EXPAND_TRANSITION.duration * 0.68;
 
 /**
  * A glass row that expands to reveal its body. Visually a sibling of Card
@@ -32,9 +44,9 @@ const REDUCED_TRANSITION = { duration: 0 };
  * fit Card's icon/title/description slots.
  *
  * Auto-open behaviour: each row watches its own scroll position and opens
- * once, the first time it reaches the reading band (`once: true` in
- * useInView latches that permanently). A manual toggle — before or after —
- * sets `userOpen`, which then wins over the automatic state forever: an
+ * once, the first time it crosses a line 40% down the viewport (`once: true`
+ * in useInView latches that permanently). A manual toggle — before or after
+ * — sets `userOpen`, which then wins over the automatic state forever: an
  * auto-opened row that's manually closed stays closed, and vice versa. No
  * shared state between rows; each is fully self-contained.
  */
@@ -48,7 +60,13 @@ export function AccordionCard({
   ...rest
 }: AccordionCardProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: '-12% 0px -22% 0px' });
+  /* Margin collapses the observer's root to a single line pinned 40% down
+     the viewport — not a band. rootMargin percentages are relative to the
+     viewport, so this line sits at the same relative position on any screen
+     size, and the card only auto-opens once its own box actually crosses
+     it (not merely "has entered the viewport", which a wider/asymmetric
+     band would trigger on well before the card reaches this line). */
+  const inView = useInView(ref, { once: true, margin: "-35% 0px -65% 0px" });
   const [userOpen, setUserOpen] = useState<boolean | null>(defaultOpen ?? null);
   const open = userOpen ?? (autoOpen && inView);
 
@@ -84,8 +102,10 @@ export function AccordionCard({
 
   useEffect(() => {
     const el = contentRef.current;
-    if (!el || typeof ResizeObserver === 'undefined') return;
-    const observer = new ResizeObserver(() => setMeasuredHeight(el.scrollHeight));
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(() =>
+      setMeasuredHeight(el.scrollHeight),
+    );
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
@@ -111,7 +131,11 @@ export function AccordionCard({
           onClick={() => setUserOpen(!open)}
         >
           <div className={styles.headerBody}>{header}</div>
-          <span className={styles.chevron} data-open={open || undefined} aria-hidden>
+          <span
+            className={styles.chevron}
+            data-open={open || undefined}
+            aria-hidden
+          >
             <ChevronIcon />
           </span>
         </button>
@@ -129,7 +153,7 @@ export function AccordionCard({
           initial={false}
           animate={{ height: open ? measuredHeight : 0 }}
           transition={transition}
-          style={{ overflow: 'hidden' }}
+          style={{ overflow: "hidden" }}
         >
           <m.div
             ref={contentRef}
@@ -138,8 +162,12 @@ export function AccordionCard({
               reducedMotion
                 ? REDUCED_TRANSITION
                 : {
-                    opacity: { duration: 0.5, delay: open ? 0.1 : 0 },
-                    y: { duration: 0.55, delay: open ? 0.08 : 0, ease: [0.22, 1, 0.36, 1] },
+                    opacity: { duration: 0.5, delay: open ? REVEAL_DELAY : 0 },
+                    y: {
+                      duration: 0.55,
+                      delay: open ? REVEAL_DELAY : 0,
+                      ease: [0.22, 1, 0.36, 1],
+                    },
                   }
             }
             className={styles.body}
@@ -155,7 +183,16 @@ export function AccordionCard({
 
 function ChevronIcon() {
   return (
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      width="13"
+      height="13"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.4"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <polyline points="6 9 12 15 18 9" />
     </svg>
   );

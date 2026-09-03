@@ -110,7 +110,7 @@
 @media (min-width: 721px) {
   .hero {
     min-height: 670px;
-    padding: var(--spacing-xxl) 0;
+    padding: clamp(116px, 13vh, 148px) 0 74px;
   }
   .nameStage {
     min-width: min(100%, 900px);
