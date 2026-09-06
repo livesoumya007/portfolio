@@ -1,0 +1,19 @@
+.wrapper {
+  display: inline;
+  position: relative;
+}
+
+.text {
+  display: inline;
+}
+
+.cursor {
+  display: inline-block;
+  width: clamp(2px, 0.045em, 4px);
+  height: 0.88em;
+  margin-left: clamp(2px, 0.06em, 6px);
+  vertical-align: -0.02em;
+  background-color: var(--color-signal);
+  box-shadow: 0 0 14px var(--color-signal-glow);
+  border-radius: 1px;
+}

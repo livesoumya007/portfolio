@@ -82,6 +82,7 @@
   letter-spacing: -0.055em;
   color: var(--color-fg);
   text-wrap: balance;
+  min-height: 1.15em;
 }
 
 .accent {
