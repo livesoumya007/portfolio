@@ -4,10 +4,22 @@
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  min-height: 610px;
-  /* Top value absorbs the floating nav's inset + height, which `main` used to
-     compensate for with a fixed pad. */
-  padding: clamp(104px, 12vh, 132px) 0 74px;
+
+  /* Full viewport height — dvh for mobile (avoids browser-chrome jump),
+     100vh as a fallback for older engines. */
+  min-height: 100vh;
+  min-height: 100dvh;
+
+  /* Flex column so .inner is vertically + horizontally centred. */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  /* Top padding clears the floating nav; bottom gives breathing room. */
+  padding: calc(var(--nav-inset) + var(--nav-height) + 24px) 0 48px;
+  box-sizing: border-box;
+
   border-bottom: 1px solid var(--color-border);
   background: var(--color-bg);
 }
@@ -32,7 +44,7 @@
 .eyebrow {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 14px;
   font-size: 16px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
@@ -42,10 +54,10 @@
 }
 
 .eyebrow::before {
-  content: "";
-  width: 22px;
+  content: '';
+  width: 34px;
   height: 1px;
-  background: var(--color-signal);
+  background: linear-gradient(90deg, transparent, var(--color-signal));
   box-shadow: 0 0 14px var(--color-signal-glow);
 }
 
@@ -65,7 +77,7 @@
   margin: 0;
   font-family: var(--font-heading);
   font-weight: 560;
-  font-size: clamp(48px, 7vw, 88px);
+  font-size: var(--text-hero-title-mobile);
   line-height: 0.98;
   letter-spacing: -0.055em;
   color: var(--color-fg);
@@ -109,11 +121,15 @@
 
 @media (min-width: 721px) {
   .hero {
-    min-height: 670px;
-    padding: clamp(116px, 13vh, 148px) 0 74px;
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: calc(var(--nav-inset) + var(--nav-height) + 32px) 0 48px;
   }
   .nameStage {
     min-width: min(100%, 900px);
     padding: 26px 112px 32px;
+  }
+  .title {
+    font-size: var(--text-hero-title);
   }
 }

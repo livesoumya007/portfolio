@@ -1,0 +1,17 @@
+.scrim {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 104px;
+  background: linear-gradient(
+    to bottom,
+    var(--color-bg) 0%,
+    rgba(10, 10, 10, 0.98) 28%,
+    rgba(10, 10, 10, 0.82) 56%,
+    rgba(10, 10, 10, 0.32) 82%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 45;
+}

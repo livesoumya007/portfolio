@@ -4,29 +4,39 @@
   "intro": "Swipe or drag through a few things I've built.",
   "projects": [
     {
-      "index": "01",
-      "year": "2026",
-      "title": "Project One",
-      "description": "Placeholder description. One or two lines on what the project does and the problem it solves.",
-      "stack": ["Next.js", "TypeScript", "Postgres"],
-      "liveUrl": "#",
-      "repoUrl": "#"
+      "title": "Personal Portfolio",
+      "description": "A modern, responsive portfolio website showcasing projects and professional experience. Built with Next.js 16 and React 19, featuring smooth animations, optimized performance, and responsive design principles.",
+      "stack": [
+        "Next.js 16",
+        "React 19",
+        "TypeScript",
+        "Tailwind CSS 4",
+        "Motion",
+        "Tabler Icons"
+      ],
+      "repoUrl": "https://github.com/livesoumya007/portfolio",
+      "liveUrl": ""
     },
     {
-      "index": "02",
-      "year": "2025",
       "title": "Project Two",
       "description": "Placeholder description. One or two lines on what the project does and the problem it solves.",
       "stack": ["React", "Node.js", "Redis"],
       "liveUrl": "#"
     },
     {
-      "index": "03",
-      "year": "2025",
-      "title": "Project Three",
-      "description": "Placeholder description. One or two lines on what the project does and the problem it solves.",
-      "stack": ["React", "D3.js", "Tailwind"],
-      "repoUrl": "#"
+      "title": "Kalpana - Social Thought Sharing Platform",
+      "description": "A full-stack Reddit-inspired social platform enabling users to create, share, and discuss thoughts in real-time. Implemented responsive UI with rich text editor capabilities, real-time data fetching, and secure authentication.",
+      "stack": [
+        "Next.js",
+        "TypeScript",
+        "Tailwind CSS",
+        "Prisma",
+        "PostgreSQL",
+        "NextAuth.js",
+        "React Hook Form"
+      ],
+      "repoUrl": "https://github.com/livesoumya007/kalpana",
+      "liveUrl": "https://kalpana-omega.vercel.app/"
     }
   ]
 }

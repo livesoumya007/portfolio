@@ -3,6 +3,7 @@
 import {
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
   type PointerEvent as ReactPointerEvent,
@@ -29,74 +30,52 @@ export function ProjectSlider() {
   const draggedRef = useRef(false);
   const reducedMotion = useReducedMotion();
 
-  const [activeIndex, setActiveIndex] = useState(0);
-  const activeIndexRef = useRef(0);
+  const [activePage, setActivePage] = useState(0);
+  const activePageRef = useRef(0);
 
-  /* Trailing spacer so every card — including the last — has its own
-     reachable scroll position. Without it: at desktop/tablet widths,
-     several cards are visible at once, so the browser clamps `scrollLeft`
-     at `scrollWidth - clientWidth` long before the later cards' natural
-     offsetLeft is reached — e.g. with 3 ~400px cards in a ~1040px track,
-     the real max scroll is ~200px, while the last card sits at ~840px.
-     Dot 2 (`scrollToIndex(1)`) and dot 3 both clamp to the SAME position,
-     so clicking dot 2 visibly activates dot 3 instead. Padding the track
-     with (trackWidth - cardWidth) of empty trailing space makes the last
-     card's position exactly reachable, which — since every earlier card
-     needs less scroll than the last — makes all of them independently
-     reachable too. Re-measured via ResizeObserver so it stays correct
-     across breakpoints and orientation changes. */
-  const [spacerWidth, setSpacerWidth] = useState(0);
+  const [cardsPerView, setCardsPerView] = useState(1);
 
+  /* Measure how many full cards fit in the visible track. */
   useEffect(() => {
     const el = trackRef.current;
     if (!el || typeof ResizeObserver === "undefined") return;
     const measure = () => {
       const card = el.firstElementChild as HTMLElement | null;
       if (!card) return;
-      setSpacerWidth(Math.max(0, el.clientWidth - card.getBoundingClientRect().width));
+      const cardW = card.getBoundingClientRect().width;
+      const gap = parseFloat(getComputedStyle(el).columnGap) || 0;
+      const trackW = el.clientWidth;
+      const visible = Math.max(1, Math.floor((trackW + gap) / (cardW + gap)));
+      setCardsPerView(visible);
     };
     const observer = new ResizeObserver(measure);
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
 
+  const pageCount = useMemo(
+    () => Math.max(1, Math.ceil(PROJECTS.length / cardsPerView)),
+    [cardsPerView],
+  );
+
+  /* Track scroll position → active page. */
   useEffect(() => {
     const el = trackRef.current;
     if (!el) return;
 
     let raf = 0;
-    // Active card = whichever one's start edge is closest to the track's
-    // current scroll position — NOT `scrollLeft / cardWidth`. That uniform
-    // step assumes every card gets its own independent scroll position,
-    // which only holds when exactly one card is visible at a time (narrow
-    // viewports). On desktop/tablet, several cards are visible at once, so
-    // the browser clamps `scrollLeft` at `scrollWidth - clientWidth` before
-    // the later cards ever reach that assumed position — a fixed step
-    // either never reaches the last index or misassigns it to an earlier
-    // one. Position-based matching is correct regardless of how many cards
-    // fit in view.
     const updateActive = () => {
       raf = 0;
-      // el.children's last entry is the trailing spacer, not a card.
-      const children = (Array.from(el.children) as HTMLElement[]).slice(0, PROJECTS.length);
-      if (!children.length) return;
-
       const maxScroll = el.scrollWidth - el.clientWidth;
-      let index = children.length - 1;
-      if (maxScroll > 0 && el.scrollLeft < maxScroll - 1) {
-        let closest = Infinity;
-        children.forEach((child, i) => {
-          const dist = Math.abs(child.offsetLeft - el.offsetLeft - el.scrollLeft);
-          if (dist < closest) {
-            closest = dist;
-            index = i;
-          }
-        });
-      }
+      if (maxScroll <= 0) return;
 
-      if (index !== activeIndexRef.current) {
-        activeIndexRef.current = index;
-        setActiveIndex(index);
+      // Map scroll progress (0 → 1) to page index (0 → pageCount-1).
+      const scrollFraction = Math.min(el.scrollLeft / maxScroll, 1);
+      const page = Math.round(scrollFraction * (pageCount - 1));
+
+      if (page !== activePageRef.current) {
+        activePageRef.current = page;
+        setActivePage(page);
       }
     };
     const onScroll = () => {
@@ -105,8 +84,6 @@ export function ProjectSlider() {
     };
 
     el.addEventListener("scroll", onScroll, { passive: true });
-    // Resizing (breakpoint change, orientation change) can change how many
-    // cards are visible without firing a scroll event — re-evaluate then too.
     window.addEventListener("resize", onScroll);
     updateActive();
     return () => {
@@ -114,19 +91,22 @@ export function ProjectSlider() {
       window.removeEventListener("resize", onScroll);
       if (raf) cancelAnimationFrame(raf);
     };
-  }, []);
+  }, [cardsPerView, pageCount]);
 
-  const scrollToIndex = useCallback(
-    (index: number) => {
+  /* Scroll to the first card of the given page. */
+  const scrollToPage = useCallback(
+    (page: number) => {
       const el = trackRef.current;
-      const card = el?.children[index] as HTMLElement | undefined;
-      if (!el || !card) return;
+      if (!el) return;
+      const cardIndex = Math.min(page * cardsPerView, PROJECTS.length - 1);
+      const card = el.children[cardIndex] as HTMLElement | undefined;
+      if (!card) return;
       el.scrollTo({
         left: card.offsetLeft - el.offsetLeft,
         behavior: reducedMotion ? "auto" : "smooth",
       });
     },
-    [reducedMotion],
+    [reducedMotion, cardsPerView],
   );
 
   // Mouse/pen drag-to-scroll. Touch is left to native momentum scrolling.
@@ -199,23 +179,24 @@ export function ProjectSlider() {
         {PROJECTS.map((project) => (
           <ProjectCard key={project.title} project={project} />
         ))}
-        <div aria-hidden style={{ flex: "none", width: spacerWidth }} />
       </div>
 
-      <div className={styles.dots} role="tablist" aria-label="Projects">
-        {PROJECTS.map((project, i) => (
-          <button
-            key={project.title}
-            type="button"
-            role="tab"
-            aria-selected={i === activeIndex}
-            aria-label={`Go to ${project.title}`}
-            data-active={i === activeIndex || undefined}
-            className={styles.dot}
-            onClick={() => scrollToIndex(i)}
-          />
-        ))}
-      </div>
+      {pageCount > 1 && (
+        <div className={styles.dots} role="tablist" aria-label="Projects">
+          {Array.from({ length: pageCount }, (_, i) => (
+            <button
+              key={i}
+              type="button"
+              role="tab"
+              aria-selected={i === activePage}
+              aria-label={`Go to page ${i + 1}`}
+              data-active={i === activePage || undefined}
+              className={styles.dot}
+              onClick={() => scrollToPage(i)}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -226,12 +207,6 @@ function ProjectCard({ project }: { project: Project }) {
   return (
     <Card
       className={styles.card}
-      eyebrow={
-        <>
-          <span>{project.index}</span>
-          <span>{project.year}</span>
-        </>
-      }
       title={project.title}
       description={project.description}
       footer={
@@ -244,7 +219,7 @@ function ProjectCard({ project }: { project: Project }) {
                 external
                 className={styles.cta}
               >
-                Live site →
+                Live Site
               </LinkButton>
             )}
             {project.repoUrl && (

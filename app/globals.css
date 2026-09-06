@@ -16,7 +16,7 @@
   --color-signal-surface: rgba(168, 85, 247, 0.16);
   --color-signal-glow: rgba(168, 85, 247, 0.28);
 
-  --color-nav-bg: rgba(10, 10, 10, 0.72);
+  --color-nav-bg: rgba(10, 10, 12, 0.88);
   --color-nav-border-rest: rgba(255, 255, 255, 0.08);
   --color-nav-border-scrolled: rgba(255, 255, 255, 0.2);
 
@@ -115,6 +115,10 @@
   /* One heading scale for every major section (Skills, Experience, Projects). */
   --text-section-heading: clamp(38px, 7vw, 66px);
 
+  /* Hero title scale — mobile base then overridden at ≥721px. */
+  --text-hero-title-mobile: 32px;
+  --text-hero-title: clamp(48px, 7vw, 88px);
+
   --radius-xs: 8px;
   --radius-sm: 12px;
   --radius-md: 16px;
@@ -178,6 +182,10 @@
   --breakpoint-md: 1023px;
   --breakpoint-lg: 1440px;
   --breakpoint-xl: 1441px;
+
+  /* Hero title typography tokens */
+  --text-hero-title-mobile: var(--text-hero-title-mobile);
+  --text-hero-title: var(--text-hero-title);
 }
 
 /* ─── Base styles ───────────────────────────────────────────────────── */

@@ -38,7 +38,7 @@ export function Hero() {
         </FadeUp>
         <FadeUp delay={0.68}>
           <div className={styles.ctas}>
-            <LinkButton href={CTA_PRIMARY.href} variant="primary">
+            <LinkButton href={CTA_PRIMARY.href} variant="primary" external>
               {CTA_PRIMARY.label} →
             </LinkButton>
             <LinkButton href={CTA_SECONDARY.href} variant="ghost">

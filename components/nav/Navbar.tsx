@@ -8,6 +8,8 @@ import { NavRail } from './NavRail';
 import { useNavScroll } from './useNavScroll';
 import { SECTION_IDS } from './nav-links';
 
+import styles from './Navbar.module.css';
+
 const DESKTOP_UP = '(min-width: 1024px)';
 
 /**
@@ -22,14 +24,18 @@ export function Navbar() {
   const reducedMotion = useReducedMotion();
 
   return (
-    <LayoutGroup id="nav">
-      <NavRail
-        activeId={activeId}
-        condensed={!isDesktopUp}
-        progress={progress}
-        reducedMotion={reducedMotion}
-        onSelect={select}
-      />
-    </LayoutGroup>
+    <>
+      <div className={styles.scrim} aria-hidden="true" />
+      <LayoutGroup id="nav">
+        <NavRail
+          activeId={activeId}
+          condensed={!isDesktopUp}
+          progress={progress}
+          reducedMotion={reducedMotion}
+          onSelect={select}
+        />
+      </LayoutGroup>
+    </>
   );
 }
+

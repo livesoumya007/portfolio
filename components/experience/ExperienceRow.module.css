@@ -84,13 +84,17 @@
   transition: color 350ms ease;
 }
 
-[data-open] .role {
+[data-open] .role,
+[data-open] .company,
+[data-open] .summary,
+[data-open] .meta {
   color: var(--color-fg);
 }
 
 .company {
   font-size: clamp(13px, 2vw, 15px);
   color: var(--color-fg-muted);
+  transition: color 350ms ease;
 }
 
 .meta {
@@ -103,7 +107,7 @@
   font-weight: 500;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--color-fg-faint);
+  color: var(--color-fg-subtle);
 }
 
 .metaDot {
@@ -115,10 +119,10 @@
 
 .summary {
   margin: 14px 0 0;
-  max-width: 62ch;
+  max-width: 82ch;
   font-size: clamp(14px, 2.1vw, 15.5px);
   line-height: 1.58;
-  color: var(--color-fg-muted);
+  color: var(--color-fg-subtle);
   text-wrap: pretty;
 }
 
