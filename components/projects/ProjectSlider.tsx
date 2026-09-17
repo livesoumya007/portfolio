@@ -26,6 +26,7 @@ export function ProjectSlider() {
     startX: number;
     startLeft: number;
     dragging: boolean;
+    pointerId: number;
   } | null>(null);
   const draggedRef = useRef(false);
   const reducedMotion = useReducedMotion();
@@ -119,10 +120,12 @@ export function ProjectSlider() {
         startX: e.clientX,
         startLeft: el.scrollLeft,
         dragging: false,
+        pointerId: e.pointerId,
       };
       draggedRef.current = false;
-      el.setPointerCapture(e.pointerId);
-      el.style.scrollSnapType = "none";
+      // Don't call setPointerCapture here — it swallows the click
+      // on child <a> elements.  Capture is deferred to pointerMove
+      // once the drag threshold is exceeded.
     },
     [],
   );
@@ -137,6 +140,10 @@ export function ProjectSlider() {
         state.dragging = true;
         draggedRef.current = true;
         el.classList.add(styles.dragging);
+        el.style.scrollSnapType = "none";
+        // Now that we know the user is dragging, capture the pointer so
+        // we keep receiving events even outside the element.
+        el.setPointerCapture(state.pointerId);
       }
       if (state.dragging) el.scrollLeft = state.startLeft - delta;
     },

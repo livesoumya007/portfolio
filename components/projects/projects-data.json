@@ -18,12 +18,6 @@
       "liveUrl": ""
     },
     {
-      "title": "Project Two",
-      "description": "Placeholder description. One or two lines on what the project does and the problem it solves.",
-      "stack": ["React", "Node.js", "Redis"],
-      "liveUrl": "#"
-    },
-    {
       "title": "Kalpana - Social Thought Sharing Platform",
       "description": "A full-stack Reddit-inspired social platform enabling users to create, share, and discuss thoughts in real-time. Implemented responsive UI with rich text editor capabilities, real-time data fetching, and secure authentication.",
       "stack": [
@@ -35,8 +29,7 @@
         "NextAuth.js",
         "React Hook Form"
       ],
-      "repoUrl": "https://github.com/livesoumya007/kalpana",
-      "liveUrl": "https://kalpana-omega.vercel.app/"
+      "repoUrl": "https://github.com/livesoumya007/kalpana"
     }
   ]
 }

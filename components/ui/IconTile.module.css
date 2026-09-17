@@ -1,0 +1,68 @@
+/* Mirrors the .iconTile rule in Card.module.css so every icon tile
+   across the site (Skills cards, Contact items, etc.) is identical. */
+
+.tile {
+  position: relative;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-md);
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+  flex-shrink: 0;
+  transition: transform 200ms cubic-bezier(0.25, 0, 0, 1);
+  will-change: transform;
+}
+
+/* Inner glow overlay — identical to Card.module.css */
+.tile::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--icon-hover-glow);
+  opacity: 0;
+  transition: opacity 200ms cubic-bezier(0.25, 0, 0, 1);
+  pointer-events: none;
+}
+
+.tile:hover {
+  transform: scale(1.08);
+}
+
+.tile:hover::after {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tile {
+    transition: none;
+    will-change: auto;
+  }
+  .tile:hover {
+    transform: none;
+  }
+}
+
+/* SVG inside a tile fills 58% — same ratio as Card.module.css */
+.tile :global(svg) {
+  width: 58%;
+  height: 58%;
+}
+
+/* ── Size variants ─────────────────────────────────────────────────── */
+
+.sm {
+  width: 36px;
+  height: 36px;
+}
+
+.md {
+  width: 44px;
+  height: 44px;
+}
+
+.lg {
+  width: var(--card-icon-size, 64px);
+  height: var(--card-icon-size, 64px);
+}

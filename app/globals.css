@@ -3,6 +3,7 @@
 /* ─── Runtime values: override these per theme ──────────────────────── */
 
 :root {
+  color-scheme: dark;
   --color-bg: #0a0a0a;
   --color-surface: rgba(255, 255, 255, 0.035);
   --color-surface-raised: rgba(255, 255, 255, 0.055);

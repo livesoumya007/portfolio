@@ -1,2 +1,357 @@
+/* ── Section shell ───────────────────────────────────────────────────── */
+
 .contact {
+  padding: var(--spacing-section) 0 0;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-bg);
+}
+
+.inner {
+  width: min(100% - clamp(32px, 8vw, 96px), var(--max-w-content));
+  margin: 0 auto;
+  padding-bottom: clamp(64px, 10vw, 120px);
+
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(40px, 6vw, 72px);
+}
+
+@media (min-width: 900px) {
+  .inner {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+}
+
+/* ── Left column ────────────────────────────────────────────────────── */
+
+.left {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(28px, 4vw, 44px);
+}
+
+/* ── Social grid — 2×2 mobile, 4-col desktop ───────────────────────── */
+
+.socialGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  justify-items: center;
+}
+
+@media (min-width: 520px) {
+  .socialGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.socialItem {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--color-fg);
+}
+
+/* ── White circular disc — matches NavRail .socialDisc ──────────────── */
+
+.socialDisc {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.94);
+  color: var(--color-bg);
+  transition:
+    background 350ms ease,
+    transform 350ms ease,
+    box-shadow 350ms ease;
+}
+
+.socialItem:hover .socialDisc {
+  background: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px -12px rgba(255, 255, 255, 0.6);
+}
+
+.socialItem:focus-visible .socialDisc {
+  outline: 2px solid var(--color-signal);
+  outline-offset: 2px;
+}
+
+.socialLabel {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--color-fg-muted);
+  transition: color 200ms ease;
+}
+
+.socialItem:hover .socialLabel {
+  color: var(--color-fg);
+}
+
+/* ── Tooltip — fades in on hover ───────────────────────────────────── */
+
+.tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  white-space: nowrap;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-fg);
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+  opacity: 0;
+  transition:
+    opacity 200ms ease,
+    transform 200ms ease;
+}
+
+.socialItem:hover .tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Tooltip arrow */
+.tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: var(--color-border);
+}
+
+/* ── Form internals ─────────────────────────────────────────────────── */
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+@media (min-width: 520px) {
+  .row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--color-fg-subtle);
+  text-transform: uppercase;
+}
+
+.required {
+  color: var(--color-signal);
+  margin-left: 1px;
+}
+
+.input,
+.textarea {
+  color-scheme: dark;
+  width: 100%;
+  padding: 11px 14px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-fg);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  outline: none;
+  resize: none;
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    background 180ms ease;
+  box-sizing: border-box;
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  color: var(--color-fg-faint);
+}
+
+.input:hover,
+.textarea:hover {
+  border-color: var(--color-border-strong);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.input:focus,
+.textarea:focus {
+  border-color: var(--color-fg);
+  box-shadow: 0 0 0 3px var(--glass-inner-hi);
+  background: var(--color-surface);
+}
+
+.textarea {
+  min-height: 130px;
+  line-height: 1.6;
+}
+
+/* ── Autofill overrides (WebKit / Blink & Gecko) ───────────────────── */
+
+.input:-webkit-autofill,
+.input:-webkit-autofill:hover,
+.input:-webkit-autofill:focus,
+.input:-webkit-autofill:active,
+.textarea:-webkit-autofill,
+.textarea:-webkit-autofill:hover,
+.textarea:-webkit-autofill:focus,
+.textarea:-webkit-autofill:active {
+  -webkit-text-fill-color: var(--color-fg) !important;
+  caret-color: var(--color-fg);
+  -webkit-box-shadow: 0 0 0 1000px #141414 inset !important;
+  box-shadow: 0 0 0 1000px #141414 inset !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+.input:-webkit-autofill:hover,
+.textarea:-webkit-autofill:hover {
+  border-color: var(--color-border-strong);
+}
+
+.input:-webkit-autofill:focus,
+.textarea:-webkit-autofill:focus {
+  border-color: var(--color-fg);
+  -webkit-box-shadow:
+    0 0 0 1000px #141414 inset,
+    0 0 0 3px var(--glass-inner-hi) !important;
+  box-shadow:
+    0 0 0 1000px #141414 inset,
+    0 0 0 3px var(--glass-inner-hi) !important;
+}
+
+.inputError:-webkit-autofill,
+.inputError:-webkit-autofill:hover,
+.inputError:-webkit-autofill:focus,
+.inputError:-webkit-autofill:active {
+  border-color: #f87171 !important;
+  -webkit-box-shadow:
+    0 0 0 1000px #141414 inset,
+    0 0 0 3px rgba(248, 113, 113, 0.15) !important;
+  box-shadow:
+    0 0 0 1000px #141414 inset,
+    0 0 0 3px rgba(248, 113, 113, 0.15) !important;
+}
+
+.input:-moz-autofill,
+.textarea:-moz-autofill {
+  box-shadow: 0 0 0 1000px #141414 inset !important;
+  -moz-text-fill-color: var(--color-fg) !important;
+}
+
+/* ── Field-level validation ─────────────────────────────────────────── */
+
+.fieldError {
+  display: block;
+  font-size: 12px;
+  color: #f87171;
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+.inputError {
+  border-color: #f87171 !important;
+}
+
+.inputError:focus {
+  border-color: #f87171 !important;
+  box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.15) !important;
+}
+
+/* ── Submit error ────────────────────────────────────────────────────── */
+
+.errorMsg {
+  font-size: 13px;
+  color: #f87171;
+  margin: 0;
+}
+
+/* ── Submit ─────────────────────────────────────────────────────────── */
+
+.submitBtn {
+  align-self: flex-end;
+  min-width: 160px;
+}
+
+/* ── Success state ──────────────────────────────────────────────────── */
+
+.successState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 32px 16px;
+  gap: 12px;
+}
+
+.successIcon {
+  color: var(--color-signal);
+  opacity: 0.85;
+}
+
+.successTitle {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--color-fg);
+}
+
+.successBody {
+  margin: 0;
+  font-size: 14px;
+  color: var(--color-fg-muted);
+  max-width: 36ch;
+}
+
+.resetBtn {
+  margin-top: 8px;
+}
+
+/* ── Footer bar ─────────────────────────────────────────────────────── */
+
+.footerBar {
+  width: 100%;
+  border-top: 1px solid var(--color-border);
+  padding: 20px clamp(24px, 6vw, 80px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.credit {
+  margin: 0;
+  font-size: 12px;
+  color: var(--color-fg);
+  letter-spacing: 0.03em;
 }
