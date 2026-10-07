@@ -11,7 +11,7 @@
      not from bleeding past a clipped ancestor. */
   padding: 6px 2px 12px;
   cursor: grab;
-  touch-action: pan-y;
+  touch-action: pan-x pan-y;
 }
 
 .track::-webkit-scrollbar {

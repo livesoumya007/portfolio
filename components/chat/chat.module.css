@@ -106,6 +106,9 @@
 .dock {
   position: fixed;
   inset: 0;
+  top: var(--vv-top, 0px);
+  bottom: auto;
+  height: var(--vv-height, 100%);
   z-index: 70;
   display: flex;
   animation: sheetIn 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
@@ -301,7 +304,7 @@
 
 .quick {
   flex: none;
-  padding: 10px var(--spacing-md) 0;
+  padding: 12px var(--spacing-md) 0;
 }
 
 /* Mobile drops the caption — the chips scroll sideways instead of wrapping,
@@ -314,6 +317,7 @@
   display: flex;
   gap: 7px;
   overflow-x: auto;
+  padding-top: 4px;
   padding-bottom: 10px;
   scrollbar-width: none;
 }
@@ -381,8 +385,7 @@
   outline: none;
   background: transparent;
   font-family: var(--font-sans);
-  /* 16px-equivalent floor: anything smaller makes iOS Safari zoom on focus. */
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.5;
   color: var(--color-fg);
 }

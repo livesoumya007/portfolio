@@ -14,10 +14,12 @@
       "summary": "Architected and scaled P&O Cruises' digital booking platform, driving platform modernization through micro-frontends, enterprise integrations, AI-enabled engineering workflows, and developer excellence initiatives.",
       "stack": [
         "React",
+        "Next.js",
         "TypeScript",
-        "D3.js",
-        "LLM fine-tuning",
-        "Workflow engine"
+        "Adobe AEM",
+        "GraphQL",
+        "Spec driven development",
+        "AI-enabled engineering workflows"
       ],
       "bullets": [
         "Designed and delivered a **scalable Next.js booking platform for Carnival**, architecting a **microfrontend system** on **Atomic Design principles** to enable modular, independently deployable experiences.",

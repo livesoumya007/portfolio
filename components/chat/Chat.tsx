@@ -83,6 +83,7 @@ export default function Chat() {
   const threadRef = useRef<HTMLDivElement>(null);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const dockRef = useRef<HTMLDivElement>(null);
 
   /*
    * useChat from @ai-sdk/react manages the full conversation lifecycle:
@@ -153,6 +154,28 @@ export default function Chat() {
     document.body.style.overflow = 'hidden';
     return () => {
       document.body.style.overflow = previous;
+    };
+  }, [open]);
+
+  /* Keep the mobile sheet sized to what's actually visible. When the iOS
+     keyboard opens, the visual viewport shrinks and scrolls while the fixed
+     sheet stays put — so the header slides off-screen and the page shows
+     beneath. Feeding the visual viewport's box into CSS vars keeps the sheet
+     exactly over the visible area. Desktop CSS ignores the vars. */
+  useEffect(() => {
+    const el = dockRef.current;
+    const vv = window.visualViewport;
+    if (!open || !el || !vv) return;
+    const sync = () => {
+      el.style.setProperty('--vv-top', `${vv.offsetTop}px`);
+      el.style.setProperty('--vv-height', `${vv.height}px`);
+    };
+    sync();
+    vv.addEventListener('resize', sync);
+    vv.addEventListener('scroll', sync);
+    return () => {
+      vv.removeEventListener('resize', sync);
+      vv.removeEventListener('scroll', sync);
     };
   }, [open]);
 
@@ -240,6 +263,7 @@ export default function Chat() {
 
       {open && (
         <div
+          ref={dockRef}
           className={styles.dock}
           data-closing={closing || undefined}
           role="dialog"
