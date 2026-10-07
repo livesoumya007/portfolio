@@ -39,12 +39,6 @@ export function NavRail({
   };
 
   return (
-    /* `layout` on the panel itself: the rail is width:fit-content, so its
-       width depends on which label is showing ("Experience" is wider than
-       "Home"). fit-content isn't an animatable value, so without this the
-       glass panel resizes in a single frame — a visible snap of up to 35px
-       at tablet widths — while the pill inside glides. Motion animates the
-       panel over the same curve so the whole bar resizes as one piece. */
     <GlassSurface
       as={m.nav}
       layout={!reducedMotion}
@@ -89,22 +83,11 @@ export function NavRail({
           const isActive = id === activeId;
           return (
             <li key={id} className={styles.item}>
-              {/* `layout` on the link itself is what keeps the condensed rail
-                  smooth. When the active item changes, this link's box changes
-                  size (the active row is the only one showing a label) and every
-                  sibling shifts. Those size/position changes MUST be animated by
-                  Motion, not by CSS: Motion measures its layout targets in the
-                  same frame the DOM commits, so a CSS transition on the same
-                  properties would still be sitting at its start value at
-                  measurement time — the indicator would then animate toward a
-                  stale box while CSS dragged the real one elsewhere, and the two
-                  would compound into an overshoot. */}
               <m.a
                 href={`#${id}`}
                 onClick={handle(id)}
                 title={label}
                 aria-label={label}
-                aria-current={isActive ? "page" : undefined}
                 className={styles.link}
                 layout={!reducedMotion}
                 transition={{ duration: MORPH_DURATION, ease: MORPH_EASE }}

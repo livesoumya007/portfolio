@@ -31,7 +31,14 @@ export type ActiveSection = {
 };
 
 export function useActiveSection(ids: readonly string[]): ActiveSection {
-  const [activeId, setActiveId] = useState<string>(() => resolveByGeometry(ids));
+  const [activeId, setActiveId] = useState<string>(ids[0]);
+
+  useEffect(() => {
+    const raf = requestAnimationFrame(() => {
+      setActiveId(resolveByGeometry(ids));
+    });
+    return () => cancelAnimationFrame(raf);
+  }, [ids]);
 
   /* Which sections currently touch the band. The observer reports deltas,
      not the full picture, so we accumulate. */
@@ -43,9 +50,6 @@ export function useActiveSection(ids: readonly string[]): ActiveSection {
   const resolve = useCallback(() => {
     if (suppressed.current) return;
 
-    /* Several sections can touch a 5%-tall band at once. Document order is
-       the stable tiebreak — intersection ratios are meaningless at this band
-       height, since every ratio is a rounding artefact of the same sliver. */
     if (!isAtPageBottom()) {
       const next = ids.find((id) => intersecting.current.has(id));
       if (next) {
@@ -54,12 +58,6 @@ export function useActiveSection(ids: readonly string[]): ActiveSection {
       }
     }
 
-    /* Two cases land here: the page can't scroll any further (so the band
-       is frozen and the observer will never fire again), or nothing is in
-       the band at all. Both are answered by geometry — the last section the
-       sight-line has passed. Deliberately NOT "force the last section": at
-       the end of a page whose final section is short, that would light
-       Contact while the reader is still looking at Projects. */
     setActiveId(resolveByGeometry(ids));
   }, [ids]);
 

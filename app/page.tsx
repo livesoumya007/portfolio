@@ -1,4 +1,5 @@
 import About from "@/components/about/About";
+import Chat from "@/components/chat/Chat";
 import Contact from "@/components/contact/Contact";
 import Experience from "@/components/experience/Experience";
 import { Hero } from "@/components/hero/Hero";
@@ -20,6 +21,7 @@ export default function Home() {
         <Experience />
         <Projects />
         <Contact />
+        <Chat />
       </main>
     </>
   );

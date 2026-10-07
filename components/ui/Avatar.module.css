@@ -1,0 +1,56 @@
+.avatar {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: none;
+  border-radius: var(--radius-full);
+  background: var(--gradient-signal);
+  box-shadow: 0 8px 20px -10px var(--color-signal);
+}
+
+.initial {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #fff;
+}
+
+.avatar :global(svg) {
+  width: 55%;
+  height: 55%;
+  color: #fff;
+}
+
+/* Presence dot. The ring is a solid dark border rather than a gap so the dot
+   reads as sitting on the avatar instead of being punched out of it — it has
+   to survive whatever translucent surface sits behind the avatar. */
+.status {
+  position: absolute;
+  right: -1px;
+  bottom: -1px;
+  width: 11px;
+  height: 11px;
+  border-radius: var(--radius-full);
+  background: var(--color-online);
+  border: 2px solid var(--color-bg);
+}
+
+/* ── Size variants ─────────────────────────────────────────────────── */
+
+.sm {
+  width: 32px;
+  height: 32px;
+}
+
+.sm .initial {
+  font-size: 13px;
+}
+
+.md {
+  width: 40px;
+  height: 40px;
+}
+
+.md .initial {
+  font-size: 15px;
+}

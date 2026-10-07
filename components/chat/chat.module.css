@@ -1,0 +1,663 @@
+/* ─────────────────────────────────────────────────────────────────────
+   Chat assistant — mobile first.
+
+   Two layouts, matching the reference: a full-screen sheet below 1024px,
+   and a docked 412×620 window from 1024px up. Everything below the media
+   query is the mobile sheet; the @media block re-docks it.
+
+   The chat owns no colours of its own — fills, borders, radii and the panel
+   geometry all come from tokens in globals.css.
+   ──────────────────────────────────────────────────────────────────── */
+
+/* ── Launcher ───────────────────────────────────────────────────────── */
+
+.launcherDock {
+  position: fixed;
+  right: var(--spacing-md);
+  /* Clears the iOS home indicator, which would otherwise sit on the button. */
+  bottom: calc(var(--spacing-md) + env(safe-area-inset-bottom, 0px));
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.tip {
+  padding: 9px 14px;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--color-fg);
+  background: var(--color-nav-bg);
+  border: 1px solid var(--color-border-strong);
+  box-shadow: var(--shadow-page);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(8px);
+  transition:
+    opacity 280ms ease,
+    transform 380ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.tip[data-visible] {
+  opacity: 1;
+  transform: none;
+}
+
+/* Touch devices have no hover, so the tip could never appear — and it would
+   still reserve layout width beside the launcher. */
+@media (hover: none) {
+  .tip {
+    display: none;
+  }
+}
+
+.launcher {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: var(--chat-launcher-size);
+  height: var(--chat-launcher-size);
+  flex: none;
+  padding: 0;
+  border: none;
+  cursor: pointer;
+  /* Brighter and glassier than the default surface — this is the one element
+     floating free over the page rather than sitting inside a section. */
+  --glass-fill: var(--shell-fill);
+  --glass-blur: 30px;
+  --glass-saturate: 200%;
+  --glass-elevation:
+    0 18px 44px -24px rgba(0, 0, 0, 0.9),
+    0 30px 70px -40px var(--color-signal-glow);
+  transition: transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.launcher:hover {
+  transform: translateY(-3px);
+}
+
+.launcher:focus-visible {
+  outline: 2px solid var(--color-signal);
+  outline-offset: 3px;
+}
+
+/* The one ambient motion cue that the assistant is there. */
+.ring {
+  position: absolute;
+  inset: -6px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-signal-glow);
+  pointer-events: none;
+  animation: ringPulse 2600ms infinite;
+}
+
+.launcherMark {
+  width: 36px;
+  height: 36px;
+}
+
+/* ── Panel ──────────────────────────────────────────────────────────── */
+
+.dock {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: flex;
+  animation: sheetIn 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.dock[data-closing] {
+  animation: sheetOut 600ms cubic-bezier(0.5, 0, 0.75, 0.2) both;
+}
+
+/* The sections settle in behind the panel, top to bottom — on mobile as well
+   as desktop; only the outer sheet/panel container's own open animation
+   differs between the two. */
+.header {
+  animation: lift 700ms cubic-bezier(0.22, 1, 0.36, 1) 220ms both;
+}
+
+.thread {
+  animation: lift 750ms cubic-bezier(0.22, 1, 0.36, 1) 320ms both;
+}
+
+.quick {
+  animation: lift 750ms cubic-bezier(0.22, 1, 0.36, 1) 440ms both;
+}
+
+.composer {
+  animation: lift 750ms cubic-bezier(0.22, 1, 0.36, 1) 540ms both;
+}
+
+/* On the way out the whole panel animates as one piece, so the per-section
+   stagger must not replay under it. */
+.dock[data-closing] .header,
+.dock[data-closing] .thread,
+.dock[data-closing] .quick,
+.dock[data-closing] .composer {
+  animation: none;
+}
+
+/* `.panel.panel` — Shell sets its own padding and 32px radius from
+   Shell.module.css. Doubling the class outranks it without depending on
+   which stylesheet the bundler happens to emit first. */
+.panel.panel {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  border-radius: 0;
+  /* Full-screen, so there is nothing behind it to refract — a fully opaque
+     fill (no alpha, no backdrop-filter) so page content behind it can never
+     show through, on any browser. */
+  --shell-fill: linear-gradient(170deg, #18121f 0%, #09080e 55%);
+  --shell-blur: 0px;
+  --shell-saturate: 100%;
+  /* No ambient bloom on the chat shell — it read as a violet wash in the
+     top-left corner, competing with the header's own avatar glow. */
+  --shell-bloom-color: transparent;
+}
+
+/* ── Header ─────────────────────────────────────────────────────────── */
+
+.header {
+  position: relative;
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: calc(var(--spacing-lg) + env(safe-area-inset-top, 0px))
+    var(--spacing-md) var(--spacing-md) var(--spacing-lg);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.identity {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.name {
+  font-family: var(--font-heading);
+  font-size: 15.5px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--color-fg);
+}
+
+/* The reference set every small label in JetBrains Mono. The site loads no
+   mono face, so these reuse the existing uppercase/tracked eyebrow treatment
+   from Card.module.css instead. */
+.eyebrow {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-fg-subtle);
+}
+
+.presence {
+  font-size: 9.5px;
+  letter-spacing: 0.18em;
+}
+
+.iconBtn {
+  display: grid;
+  place-items: center;
+  /* 44px is the touch-target floor; the desktop block drops it to 34px. */
+  width: 44px;
+  height: 44px;
+  flex: none;
+  padding: 0;
+  border: none;
+  cursor: pointer;
+  color: var(--color-fg-muted);
+  --glass-fill: var(--color-surface-raised);
+  transition:
+    color 300ms ease,
+    background 300ms ease;
+}
+
+.iconBtn:hover {
+  color: var(--color-fg);
+  --glass-fill: rgba(255, 255, 255, 0.12);
+}
+
+.iconBtn:focus-visible {
+  outline: 2px solid var(--color-signal);
+  outline-offset: 2px;
+}
+
+.iconBtn :global(svg) {
+  width: 19px;
+  height: 19px;
+}
+
+/* Reset is desktop-only: the reference's mobile header carries close alone,
+   and two 44px targets already fill the row beside the name. */
+.resetBtn {
+  display: none;
+}
+
+/* Close — red fill, white icon, same on mobile and desktop (no override in
+   the @media block below, so this one rule covers both). `.closeBtn.closeBtn`
+   outranks .iconBtn's own --glass-fill regardless of declaration order. */
+.closeBtn.closeBtn {
+  color: #fff;
+  --glass-fill: #ef4444;
+}
+
+.closeBtn.closeBtn:hover {
+  color: #fff;
+  --glass-fill: #dc2626;
+}
+
+/* ── Thread ─────────────────────────────────────────────────────────── */
+
+.thread {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  /* Stops a flick at the top of the thread from scrolling the page behind. */
+  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  padding: 22px var(--spacing-md) var(--spacing-xs);
+}
+
+.intro {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.introTitle {
+  font-family: var(--font-heading);
+  font-size: 23px;
+  line-height: 1.28;
+  font-weight: 600;
+  letter-spacing: -0.028em;
+  color: var(--color-fg);
+}
+
+.introBody {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--color-fg-muted);
+}
+
+/* ── Quick actions ──────────────────────────────────────────────────── */
+
+.quick {
+  flex: none;
+  padding: 10px var(--spacing-md) 0;
+}
+
+/* Mobile drops the caption — the chips scroll sideways instead of wrapping,
+   so the label would cost a line of a full-screen sheet for nothing. */
+.quickLabel {
+  display: none;
+}
+
+.quickRow {
+  display: flex;
+  gap: 7px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+  scrollbar-width: none;
+}
+
+.quickRow::-webkit-scrollbar {
+  display: none;
+}
+
+/* `.chip.chip` — same reason as .panel.panel: outranks .control's own
+   min-height and padding in controls.module.css regardless of order. */
+.chip.chip {
+  flex: none;
+  min-height: 40px;
+  padding: 0 15px;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  color: var(--color-fg-muted);
+}
+
+.chip.chip:hover {
+  color: var(--color-fg);
+}
+
+.chipIcon {
+  width: 15px;
+  height: 15px;
+  flex: none;
+  color: var(--color-signal);
+}
+
+/* ── Composer ───────────────────────────────────────────────────────── */
+
+.composer {
+  flex: none;
+  padding: 6px var(--spacing-md)
+    calc(18px + env(safe-area-inset-bottom, 0px));
+}
+
+.field {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--spacing-xs);
+  padding: 6px 6px 6px var(--spacing-md);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border-strong);
+  box-shadow: inset 0 1px 0 var(--glass-inner-hi);
+  transition: border-color 300ms ease;
+}
+
+.field:focus-within {
+  border-color: #fff;
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  /* Height is driven from Chat.tsx as the draft grows; this caps it. */
+  max-height: 90px;
+  resize: none;
+  padding: 12px 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: var(--font-sans);
+  /* 16px-equivalent floor: anything smaller makes iOS Safari zoom on focus. */
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-fg);
+}
+
+.input::placeholder {
+  color: var(--color-fg-subtle);
+}
+
+.send.send {
+  width: 44px;
+  height: 44px;
+  min-height: 0;
+  flex: none;
+  padding: 0;
+}
+
+.send :global(svg) {
+  width: 18px;
+  height: 18px;
+}
+
+/* Desktop-only — the reference's mobile sheet omits the footnote. */
+.footnote {
+  display: none;
+}
+
+/* ── Keyframes ──────────────────────────────────────────────────────── */
+
+@keyframes ringPulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(2.1);
+    opacity: 0;
+  }
+}
+
+/* Mobile: the sheet rises from the bottom edge. */
+@keyframes sheetIn {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes sheetOut {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+  to {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+}
+
+/* Desktop: the window scales out of the launcher's corner. */
+@keyframes panelIn {
+  0% {
+    opacity: 0;
+    transform: translate(14px, 22px) scale(0.72);
+    filter: blur(6px);
+  }
+  55% {
+    opacity: 1;
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+}
+
+@keyframes panelOut {
+  0% {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(14px, 22px) scale(0.72);
+    filter: blur(6px);
+  }
+}
+
+@keyframes lift {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ── Desktop: docked window ─────────────────────────────────────────── */
+
+@media (min-width: 1024px) {
+  .launcherDock {
+    right: var(--chat-dock-inset);
+    bottom: var(--chat-dock-inset);
+  }
+
+  .launcher {
+    --chat-launcher-size: 60px;
+  }
+
+  .dock {
+    /* Detach from the full-viewport sheet and pin to the bottom-right. The
+       max-* pair keeps it on screen in a short or narrow desktop window. */
+    inset: auto var(--chat-dock-inset) var(--chat-dock-inset) auto;
+    width: var(--chat-panel-width);
+    max-width: calc(100vw - var(--chat-dock-inset) * 2);
+    height: var(--chat-panel-height);
+    max-height: calc(100vh - var(--chat-dock-inset) * 2);
+    transform-origin: 100% 100%;
+    animation: panelIn 820ms cubic-bezier(0.19, 1.04, 0.3, 1) both;
+  }
+
+  .dock[data-closing] {
+    animation: panelOut 620ms cubic-bezier(0.5, 0, 0.75, 0.2) both;
+  }
+
+  .panel.panel {
+    border-radius: var(--radius-lg);
+    /* Opaque here too — real glass let page content behind the window show
+       through and read as overlapping/illegible, same as on mobile. */
+    --shell-fill: linear-gradient(155deg, #1c1626 0%, #0c0a12 55%);
+    --shell-blur: 0px;
+    --shell-saturate: 100%;
+  }
+
+  .header {
+    padding: 16px 14px 15px 18px;
+  }
+
+  .name {
+    font-size: 14.5px;
+  }
+
+  .iconBtn {
+    width: 34px;
+    height: 34px;
+  }
+
+  .iconBtn :global(svg) {
+    width: 15px;
+    height: 15px;
+  }
+
+  .resetBtn {
+    display: grid;
+  }
+
+  .thread {
+    gap: 14px;
+    padding: 20px 18px var(--spacing-xs);
+  }
+
+  .introTitle {
+    font-size: 20px;
+    line-height: 1.3;
+    letter-spacing: -0.025em;
+  }
+
+  .introBody {
+    font-size: 13.5px;
+  }
+
+  .quick {
+    padding: 12px 18px 0;
+  }
+
+  .quickLabel {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    margin-bottom: 9px;
+  }
+
+  .quickLabel .eyebrow {
+    font-size: 9.5px;
+    white-space: nowrap;
+  }
+
+  .quickRule {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      var(--color-border-strong),
+      transparent
+    );
+  }
+
+  .quickRow {
+    flex-wrap: wrap;
+    overflow: visible;
+    padding-bottom: 0;
+  }
+
+  .chip.chip {
+    min-height: 34px;
+    padding: 0 13px;
+    font-size: 12.5px;
+  }
+
+  .chipIcon {
+    width: 13px;
+    height: 13px;
+  }
+
+  .composer {
+    padding: 14px 16px 16px;
+  }
+
+  .field {
+    border-radius: 22px;
+    padding: 6px 6px 6px 15px;
+  }
+
+  .input {
+    font-size: 13.5px;
+    padding: 10px 0;
+  }
+
+  .send.send {
+    width: 38px;
+    height: 38px;
+  }
+
+  .send :global(svg) {
+    width: 16px;
+    height: 16px;
+  }
+
+  .footnote {
+    display: block;
+    margin: 9px 0 0;
+    text-align: center;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-fg-faint);
+  }
+}
+
+/* ── Reduced motion ─────────────────────────────────────────────────── */
+/* Last in the file so it also overrides the desktop stagger above. */
+
+@media (prefers-reduced-motion: reduce) {
+  .dock,
+  .dock[data-closing],
+  .header,
+  .thread,
+  .quick,
+  .composer,
+  .ring,
+  .launcher,
+  .tip {
+    animation: none;
+    transition: none;
+  }
+
+  .launcher:hover {
+    transform: none;
+  }
+}

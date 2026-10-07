@@ -10,9 +10,10 @@
         "Next.js 16",
         "React 19",
         "TypeScript",
-        "Tailwind CSS 4",
         "Motion",
-        "Tabler Icons"
+        "RAG",
+        "LangChain",
+        "Vercel AI-SDK"
       ],
       "repoUrl": "https://github.com/livesoumya007/portfolio",
       "liveUrl": ""

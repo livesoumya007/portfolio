@@ -1,0 +1,51 @@
+/* Mirrors the bot bubble in Bubble.module.css — same tokens, same tail — so
+   the indicator occupies the shape the reply will take. */
+.dots {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: fit-content;
+  padding: 12px 15px;
+  background: var(--bubble-bot-bg);
+  border: 1px solid var(--bubble-bot-border);
+  border-radius: var(--bubble-radius) var(--bubble-radius) var(--bubble-radius)
+    var(--bubble-tail);
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--color-signal);
+  animation: dotPulse 1200ms infinite;
+}
+
+.dot:nth-child(2) {
+  animation-delay: 150ms;
+}
+
+.dot:nth-child(3) {
+  animation-delay: 300ms;
+}
+
+@keyframes dotPulse {
+  0%,
+  60%,
+  100% {
+    opacity: 0.25;
+    transform: translateY(0);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(-3px);
+  }
+}
+
+/* No animation left, so hold the dots at full opacity — otherwise the
+   indicator freezes at whatever the first keyframe happens to be. */
+@media (prefers-reduced-motion: reduce) {
+  .dot {
+    animation: none;
+    opacity: 0.7;
+  }
+}

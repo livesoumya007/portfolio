@@ -120,6 +120,38 @@
   --text-hero-title-mobile: 32px;
   --text-hero-title: clamp(48px, 7vw, 88px);
 
+  /* ─── Chat assistant ────────────────────────────────────────────────
+     Avatar / launcher mark. Violet-only on purpose: the reference graded
+     violet into a second blue accent, but --color-signal is the system's
+     single accent, so this grades the signal into itself instead. */
+  --gradient-signal: linear-gradient(
+    150deg,
+    var(--color-signal),
+    rgba(124, 58, 237, 0.72)
+  );
+  --color-online: #4ade80;
+
+  /* Message bubbles. The one squared-off corner is what reads as a chat
+     turn: --bubble-radius on three corners, --bubble-tail on the speaker's
+     side. Deliberately flat — bubbles sit *inside* the glass panel, so
+     giving them their own ring would stack glass on glass. */
+  --bubble-radius: var(--radius-md);
+  --bubble-tail: 5px;
+  --bubble-me-bg: rgba(255, 255, 255, 0.93);
+  --bubble-me-fg: var(--color-bg);
+  --bubble-me-border: rgba(255, 255, 255, 0.6);
+  --bubble-me-shadow: 0 8px 22px -14px rgba(255, 255, 255, 0.5);
+  --bubble-bot-bg: var(--color-surface-raised);
+  --bubble-bot-fg: rgba(255, 255, 255, 0.88);
+  --bubble-bot-border: var(--color-border);
+
+  /* Chat geometry. Mobile is a full-screen sheet, so the panel dimensions
+     only take effect from 1024px up, where it docks bottom-right. */
+  --chat-panel-width: 412px;
+  --chat-panel-height: 620px;
+  --chat-dock-inset: 34px;
+  --chat-launcher-size: 58px;
+
   --radius-xs: 8px;
   --radius-sm: 12px;
   --radius-md: 16px;
