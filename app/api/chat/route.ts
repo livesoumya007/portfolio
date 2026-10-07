@@ -59,6 +59,7 @@ He is currently open to new opportunities.
 ## Base Context
 The following is a high-level overview of his portfolio. 
 
+${buildPortfolioContext()}
 
 ## Your Instructions
 1. **Be an Advocate:** Present Soumya's experience confidently and professionally. Highlight his impact (e.g., performance improvements, architectural decisions).
@@ -126,7 +127,6 @@ ${ragChunks.join("\n\n---\n\n")}
       model: openai("gpt-5-mini"),
       system: SYSTEM_PROMPT + ragSection,
       messages: modelMessages,
-      providerOptions: { openai: { reasoningEffort: 'low' } },
     });
 
     return result.toUIMessageStreamResponse({ onError: toVisitorMessage });
